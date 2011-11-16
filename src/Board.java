@@ -5,5 +5,15 @@
  * Time: 20.10
  * To change this template use File | Settings | File Templates.
  */
-public class Board {
+public class Board{
+
+
+
+    public Board() {
+
+    }
+
+    public static void main(String[] args) {
+        System.out.println("Test");
+    }
 }
