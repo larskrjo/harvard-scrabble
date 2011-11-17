@@ -11,12 +11,14 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.ListResourceBundle;
 
 public class Dictionary {
     public List<String> words;
     public File file = new File("/Users/havard_normann/scrabble/src/enable1.txt");
     public static final int NumberOfLetters = 26;
     public static final String alphabet = "abcdefghijklmnopqrstuvwxyz";
+    public Node dawg;
 
     public Dictionary() {
         this.words = new ArrayList<String>();
@@ -38,12 +40,12 @@ public class Dictionary {
     }
 
     public void createDawg() {
-        Node root = new Node("root", null);
+        this.dawg = new Node("root", null);
         List<Node> nodes = new ArrayList<Node>();
 
         for (int i = 0; 0 < alphabet.length(); i++) {
             String letter = alphabet.substring(0, 1);
-            Node node = new Node(letter, root);
+            Node node = new Node(letter, this.dawg);
             nodes.add(node);
         }
         for (String word : this.words) {
