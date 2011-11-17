@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by IntelliJ IDEA.
  * User: havard_normann
@@ -6,4 +9,38 @@
  * To change this template use File | Settings | File Templates.
  */
 public class Player {
+    public List<Character> letters;
+    public int score;
+
+    public Player(char[] letters) {
+        this.letters = new ArrayList<Character>();
+        for (char letter : letters) {
+            this.letters.add(letter);
+        }
+        this.score = 0;
+    }
+
+    public char[] getLetters() {
+        char[] list = new char[7];
+        for (int i = 0; i < this.letters.size(); i++) {
+            list[i] = this.letters.get(i);
+        }
+        return list;
+    }
+
+    public void removeLetter(char letter) {
+        this.letters.remove(letter);
+    }
+
+    public boolean hasLetter(char letter) {
+        return this.letters.contains(letter);
+    }
+
+    public int getScore() {
+        return this.score;
+    }
+
+    public void addScore(int value) {
+        this.score += value;
+    }
 }

@@ -6,4 +6,8 @@
  * To change this template use File | Settings | File Templates.
  */
 public class Operator {
+    public Board board;
+    public Dictionary dictionary;
+    public Player[] player;
+    public Bag bag;
 }
