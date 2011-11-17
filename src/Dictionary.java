@@ -15,7 +15,7 @@ import java.util.ListResourceBundle;
 
 public class Dictionary {
     public List<String> words;
-    public File file = new File("/Users/havard_normann/scrabble/src/enable1.txt");
+    public File file = new File("dictionary/scrabblewords.txt");
     public static final int NumberOfLetters = 26;
     public static final String alphabet = "abcdefghijklmnopqrstuvwxyz";
     public Node dawg;
