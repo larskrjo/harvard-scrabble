@@ -8,8 +8,8 @@
 public class Test {
 
 	public static void main(String[] args){
-		String text = "abc";
-        System.out.println(text.substring(1) + " " + text.substring(2,3));
+		int i = (int)(1.5*2.5);
+        System.out.println("Dette er " + i);
 	}
 
 }

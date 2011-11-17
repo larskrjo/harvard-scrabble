@@ -56,4 +56,23 @@ public class Bag {
             }
         }
     }
+
+    public char drawLetter() {
+        int index = (int)Math.random()*this.letters.size();
+        char letter = this.letters.get(index);
+        this.letters.remove(index);
+        return letter;
+    }
+
+    public char[] drawPlayerStacks() {
+        char[] letters = new char[7];
+        for (int i = 0; i < 7; i++) {
+            letters[i] = drawLetter();
+        }
+        return letters;
+    }
+
+    public List<Character> getLetters() {
+        return letters;
+    }
 }

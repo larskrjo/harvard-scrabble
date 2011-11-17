@@ -32,6 +32,14 @@ public class Player {
         this.letters.remove(letter);
     }
 
+    public boolean addLetter(char letter) {
+        if (this.letters.size() < 7) {
+            this.letters.add(letter);
+            return true;
+        }
+        return false;
+    }
+
     public boolean hasLetter(char letter) {
         return this.letters.contains(letter);
     }
