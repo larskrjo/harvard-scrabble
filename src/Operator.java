@@ -1,3 +1,5 @@
+import dictionary.Dictionary;
+
 /**
  * Created by IntelliJ IDEA.
  * User: havard_normann
