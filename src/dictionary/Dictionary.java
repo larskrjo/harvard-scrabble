@@ -9,8 +9,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.List;
-import java.util.ArrayList;
+import java.util.*;
 
 public class Dictionary {
     public String[] words;
@@ -31,19 +30,30 @@ public class Dictionary {
             System.out.println("Something went wrong reading the file:");
             System.out.println(ex);
         }
-	    createDawg();
-    }
+	    createDAWG();
 
-    public String[] getList() {
-        return words;
+	    List<Character> chars = new ArrayList<Character>();
+	    chars.add('e');
+	    chars.add('h');
+	    chars.add('l');
+	    chars.add('l');
+	    chars.add('o');
+	    chars.add('r');
+	    chars.add('s');
+	    chars.add('t');
+	    long time = System.currentTimeMillis();
+	    List<String> words = getWords("", chars);
+	    time = System.currentTimeMillis()-time;
+	    System.out.println("Found: " + words);
+	    System.out.println("Number of elements: " + words.size());
+	    System.out.println("Time used: " + time + "ms");
     }
-
 
 	/**
 	 * Created the DAWG that will be easily searchable.
 	 */
-    public void createDawg() {
-        DAWG = new Node(' ', Type.END_OF_STRING, null);
+    public void createDAWG() {
+        DAWG = new Node(' ', Type.NOT_A_WORD, null);
 	    Node currentNode;
 	    Node childNode;
 	    Node smiliarChildNode;
@@ -57,14 +67,12 @@ public class Dictionary {
 			        childNode.setType(Type.END_OF_STRING);
 		        }
 		        smiliarChildNode = currentNode.contain(childNode);
-
 		    	if (smiliarChildNode == null){
 					currentNode.addChild(childNode);
 				    currentNode = childNode;
 			    } // Edit child node if it exists
 		        else {
-				    if ((childNode.getType() == Type.NOT_A_WORD && smiliarChildNode.getType() == Type.END_OF_STRING) ||
-						    smiliarChildNode.getType() == Type.NOT_A_WORD){
+				    if ((childNode.getType() == Type.NOT_A_WORD && smiliarChildNode.getType() == Type.END_OF_STRING)){
 						smiliarChildNode.setType(Type.END_OF_WORD);
 				    }
 				    currentNode = smiliarChildNode;
@@ -94,9 +102,42 @@ public class Dictionary {
 		return currentNode.getType();
 	}
 
+	public List<String> getWords(String subString, List<Character> bag){
+		List<String> list = new ArrayList<String>();
+		Type type = search(subString);
+		if(type == Type.END_OF_WORD){
+			list.add(subString);
+		}
+		else if (type == Type.END_OF_STRING){
+			List<String> returnValue = new ArrayList<String>();
+			returnValue.add(subString);
+			return returnValue;
+		} else if (bag.size() == 0){
+			return null;
+		}
+		List<String> tempList;
+		List<Character> tempBag = new ArrayList<Character>(bag.size());
+		Set<Character> tempSet = new HashSet<Character>();
+		for(Character item: bag) tempBag.add(item);
+		for(Character item: bag) tempSet.add(item);
+		Iterator<Character> it = tempSet.iterator();
+		while(it.hasNext()){
+			// Add a new character to the string and remove it from the bag.
+		    Character removed = it.next();
+			subString += removed;
+			tempBag.remove(tempBag.indexOf(removed));
+			tempList = getWords(subString, tempBag);
+			if(tempList != null){
+				list.addAll(tempList);
+			}
+			// Revert, and shift character.
+			subString = subString.substring(0,subString.length()-1);
+			tempBag.add(removed);
+		}
+		return list;
+	}
+
     public static void main(String[] args) {
         Dictionary dict = new Dictionary();
-	    Type type = dict.search("aah");
-	    System.out.println(type);
     }
 }
