@@ -33,6 +33,7 @@ public class Operator {
         } else {
             rack = this.playerB.getLetters().toString();
         }
+        System.out.println("Rack: " + rack);
         Placement placement = Intelligence.getPlacement(this.dictionary, this.board, rack);
 
         this.board.addWord(placement);
@@ -93,8 +94,11 @@ public class Operator {
 
     public static void main(String[] args) {
         Operator operator = new Operator();
+        System.out.println("Spillet er opprettet");
         while(!operator.endGame()) {
+            System.out.println("Inne i while");
             operator.makeMove();
+            System.out.println("Har gjort moves");
         }
         System.out.println("The winner is: " + operator.winnerToString() + " with a total score: " + operator.winner().getScore());
     }

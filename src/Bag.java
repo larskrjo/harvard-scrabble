@@ -1,3 +1,5 @@
+import sun.tools.tree.ThisExpression;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,7 +60,7 @@ public class Bag {
     }
 
     public char drawLetter() {
-        int index = (int)Math.random()*this.letters.size();
+        int index = (int)(Math.random()*this.letters.size());
         char letter = this.letters.get(index);
         this.letters.remove(index);
         return letter;

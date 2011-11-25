@@ -20,12 +20,12 @@ public class Player {
         this.score = 0;
     }
 
-    public char[] getLetters() {
-        char[] list = new char[7];
+    public String getLetters() {
+        String word = "";
         for (int i = 0; i < this.letters.size(); i++) {
-            list[i] = this.letters.get(i);
+            word = word + this.letters.get(i);
         }
-        return list;
+        return word;
     }
 
     public void removeWord(String str) {
