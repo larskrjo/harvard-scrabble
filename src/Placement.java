@@ -11,11 +11,20 @@ public class Placement {
     // Specifically used by the Intelligence class for returning the optimal placement
 
     private String word;
+    private String rack;
     private int row;
     private int col;
     private boolean direction; // True for horizontal and False for vertical
 
     public Placement(String word, int row, int col, boolean direction) {
+        this.word = word;
+        this.row = row;
+        this.col = col;
+        this.direction = direction;
+    }
+
+    public Placement(String word, String rack, int row, int col, boolean direction) {
+        this.rack = rack;
         this.word = word;
         this.row = row;
         this.col = col;
@@ -38,5 +47,7 @@ public class Placement {
         return this.direction;
     }
 
-
+    public String getRack() {
+        return this.rack;
+    }
 }

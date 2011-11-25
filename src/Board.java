@@ -48,6 +48,10 @@ public class Board{
         }
     }
 
+    public Field getField(int rw, int cl) {
+        return this.grid[rw][cl];
+    }
+
     public int addWord(Placement placement) {
         String word = placement.getWord();
         boolean horizontal = placement.getDirection();
@@ -91,7 +95,6 @@ public class Board{
         boolean horizontal = placement.getDirection();
         int rw = placement.getRow();
         int cl = placement.getCol();
-
         // Computes the score of a given placement and -1 if placement is in conflict current board (not in terms of dictionary)
         int raw_score = 0;
         int other_score = 0;
@@ -223,8 +226,6 @@ public class Board{
     }
 
     public static void main(String[] args) {
-        Board board = new Board();
-        //System.out.println(board.addWord("ssssssss", 14, 0, true));
-        //System.out.print(board);
+
     }
 }

@@ -2,6 +2,8 @@ import com.sun.corba.se.spi.ior.MakeImmutable;
 import dictionary.Dictionary;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -12,55 +14,118 @@ import java.util.ArrayList;
 // */
 public class Intelligence {
 
+    public static final boolean rackEvaluation = true;
+    public static final boolean balance = true;
+    public static final boolean doubles = true;
+    public static final boolean triples = true;
+    public static final boolean specials = true;
+
+    public static final boolean positionEvaluation = true;
+    public static final boolean doubleWord = true;
+    public static final boolean tripleWord = true;
+    public static final boolean doubleLetter = true;
+    public static final boolean tripleLetter = true;
+    public static final boolean weighting = true;
+
+    public static final boolean firstTurnOpenness = true;
+    public static final boolean duplicateProbability = true;
+
     public static Placement getPlacement(Dictionary dict, Board board, String rack) {
         ArrayList<Placement> candidates = getCandidates(dict, board, rack);
-        return null;
+        return useHeuristics(board, rack, candidates);
     }
 
     public static ArrayList<Placement> getCandidates(Dictionary dict, Board board, String rack) {
         ArrayList<Placement> candidates = new ArrayList<Placement>();
-        ArrayList<Tuple> positions = board.getLetterPositions();
-        for (Tuple position : positions) {
-            candidates.addAll(getCandidatesSubset(dict, board, rack, position));
+        List<Character> charList = new ArrayList<Character>();
+        for (char c : rack.toCharArray()) {
+            charList.add(c);
+        }
+        char[] lockedLetters = new char[15];
+	    for(int i = 0; i < lockedLetters.length; i++){
+		    lockedLetters[i] = '_';
+	    }
+        // Horizontal computations
+        for (int rw = 0; rw < 15; rw++) {
+            for (int cl = 0; cl < 15; cl++) {
+                if (board.getField(rw,cl).getLetter() != ' ') {
+                    lockedLetters[cl] = board.getField(rw,cl).getLetter();
+                }
+            }
+            // Lars Kristian's function
+            // NB! ASSUMPTION
+            String word = "";
+            int index = 0;
+            String theRack = "";
+            int counter = 0;
+            for (int i = index; i < word.length() + index; i++) {
+                if (board.getField(rw, i).getLetter() != word.charAt(counter)) {
+                    theRack += word.charAt(counter);
+                }
+                counter++;
+            }
+            candidates.add(new Placement(word, rack, rw, index,  true));
+        }
+
+        // Vertical computations
+        for (int cl = 0; cl < 15; cl++) {
+            for (int rw = 0; rw < 15; rw++) {
+                if (board.getField(rw,cl).getLetter() != ' ') {
+                    lockedLetters[rw] = board.getField(rw,cl).getLetter();
+                }
+            }
+            // Lars Kristian's function
+            // NB! ASSUMPTION
+            String word = "";
+            int index = 0;
+            String theRack = "";
+            int counter = 0;
+            for (int i = index; i < word.length() + index; i++) {
+                if (board.getField(i, cl).getLetter() != word.charAt(counter)) {
+                    theRack += word.charAt(counter);
+                }
+                counter++;
+            }
+            candidates.add(new Placement(word, rack, index, cl,  false));
         }
         return candidates;
     }
 
-    public static ArrayList<Placement> getCandidatesSubset(Dictionary dict, Board board, String rack, Tuple position) {
-        ArrayList<Placement> candidatesSubset = new ArrayList<Placement>();
-        //candidatesSubset.addAll(getCandidatesSubsetHorizontal(dict, board, rack, position));
-        //candidatesSubset.addAll(getCandidatesSubsetVertical(dict, board, rack, position));
-        return candidatesSubset;
-    }
-
-    //public static ArrayList<Placement> getCandidatesSubsetHorizontal(Dictionary dict, Board board, String rack, Tuple position) {
-        // Find open spaces (up to seven or space before first letter) left of position and right (up to seven) of position
-
-        //for (int i = 0; i <= 8; i++) {
-
-      //  }
-    //}
-
-    //public static ArrayList<Placement> getCandidatesSubsetVertical(Dictionary dict, Board board, String rack, Tuple position) {
-        // Todo
-    //}
-
-    //public ArrayList<Placement>
-
     public static void main(String[] args){
-        System.out.println("test");
-        Dictionary dict = new Dictionary();
-        System.out.println(dict.search("arg"));
-        System.out.println(dict.search("xxx"));
-        System.out.println(dict.search("the"));
-        System.out.println(dict.search("advocacy"));
-
+        System.out.print("JKFLDKSJ");
       }
 
-    public static ArrayList<String> getWords(String rack, ArrayList<Fixed> fixed) {
-        ArrayList<String> words = new ArrayList<String>();
+    public static Placement useHeuristics(Board board, String rack, ArrayList<Placement> candidates) {
+        Hashtable<Placement, Integer> candToScore = new Hashtable<Placement, Integer>();
 
-        return words;
+        // NOTE: maybe smart to sort by raw score and then only compute (expensive) heuristic calculations
+        //       on subset (for instance 20 - 30) of candidates
+
+        for (Placement candidate : candidates) {
+            int score = board.computeScore(candidate);
+            if (rackEvaluation) {
+                // Compute rackLeave with candidate placement
+                String rackLeave = rack;
+                for (int i = 0; i < candidate.getRack().length(); i++) {
+                    if (rack.contains(Character.toString(candidate.getRack().charAt(i)))) {
+                        rackLeave.replaceFirst(Character.toString(candidate.getRack().charAt(i)),"");
+                    }
+                }
+            }
+            if (positionEvaluation) {
+
+            }
+            // (...)
+            candToScore.put(candidate, score);
+        }
+        Placement theBest = null;
+        int theBestScore = Integer.MIN_VALUE;
+        for (Placement candidate : candToScore.keySet()) {
+            if (candToScore.get(candidate) > theBestScore) {
+                theBest = candidate;
+                theBestScore = candToScore.get(candidate);
+            }
+        }
+        return theBest;
     }
-
 }
