@@ -162,6 +162,9 @@ public class Dictionary {
 			     max = i;
 		     }
 	    }
+	    if(min == -1){
+		    return lists;
+	    }
 	    for(int i = min; i < max+1; i++){
 		    lists[i] = getWords("", bag, lockedLetters, i);
 	    }
