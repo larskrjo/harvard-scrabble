@@ -101,17 +101,18 @@ public class Dictionary {
 	private List<String> getWords(String subString, List<Character> bag, char[] lockedLetters, int position){
 		List<String> list = new ArrayList<String>();
 		Type type = search(subString);
-		if(type == Type.END_OF_WORD && containLockedLetter(lockedLetters, position) && position == 15){
+		if(type == Type.END_OF_WORD && containLockedLetter(lockedLetters, position) && position == 15 && bag.size() < 7){
 			List<String> returnValue = new ArrayList<String>();
 			returnValue.add(subString);
 			return returnValue;
 		}
-		if(type == Type.END_OF_WORD && containLockedLetter(lockedLetters, position) && lockedLetters[position] == '_'){
+		if(type == Type.END_OF_WORD && containLockedLetter(lockedLetters, position) && lockedLetters[position] == '_'
+				&& bag.size() < 7){
 			list.add(subString);
 		}
 		else if (type == Type.END_OF_STRING){
 			if(containLockedLetter(lockedLetters, position) && (position == 15 || lockedLetters[position] ==
-					'_')){
+					'_') && bag.size() < 7){
 				List<String> returnValue = new ArrayList<String>();
 				returnValue.add(subString);
 				return returnValue;
@@ -171,5 +172,23 @@ public class Dictionary {
 		    }
 	    }
 	    return lists;
+    }
+
+	public static void main(String[] args) {
+		Dictionary dict = new Dictionary();
+		char[] row = {'a', 'b', 'b', 'a', '_', '_', '_', '_', '_', '_', '_', '_', '_', '_', '_'};
+		List<Character> rack = new ArrayList<Character>();
+		rack.add('a');
+		rack.add('t');
+		rack.add('e');
+		rack.add('e');
+		rack.add('e');
+		rack.add('e');
+		rack.add('e');
+		List<String>[] list = dict.getWords(rack, row);
+		for(int i = 0; i < list.length; i++){
+			System.out.println(list[i]);
+		}
+
     }
 }

@@ -1,6 +1,5 @@
 import com.sun.corba.se.spi.ior.MakeImmutable;
 import dictionary.Dictionary;
-import sun.jvm.hotspot.oops.Array;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
