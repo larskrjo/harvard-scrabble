@@ -98,21 +98,22 @@ public class Dictionary {
 		return currentNode.getType();
 	}
 
-	private List<String> getWords(String subString, List<Character> bag, char[] lockedLetters, int position){
+	private List<String> getWords(String subString, List<Character> bag, char[] lockedLetters, int position,
+	                              int sizeOfBag){
 		List<String> list = new ArrayList<String>();
 		Type type = search(subString);
-		if(type == Type.END_OF_WORD && containLockedLetter(lockedLetters, position) && position == 15 && bag.size() < 7){
+		if(type == Type.END_OF_WORD && containLockedLetter(lockedLetters, position) && position == 15 && bag.size() < sizeOfBag){
 			List<String> returnValue = new ArrayList<String>();
 			returnValue.add(subString);
 			return returnValue;
 		}
 		if(type == Type.END_OF_WORD && containLockedLetter(lockedLetters, position) && lockedLetters[position] == '_'
-				&& bag.size() < 7){
+				&& bag.size() < sizeOfBag){
 			list.add(subString);
 		}
 		else if (type == Type.END_OF_STRING){
 			if(containLockedLetter(lockedLetters, position) && (position == 15 || lockedLetters[position] ==
-					'_') && bag.size() < 7){
+					'_') && bag.size() < sizeOfBag){
 				List<String> returnValue = new ArrayList<String>();
 				returnValue.add(subString);
 				return returnValue;
@@ -123,7 +124,7 @@ public class Dictionary {
 		}
 		List<String> tempList;
 		if(lockedLetters[position] != '_'){
-			   tempList = getWords(subString+lockedLetters[position], bag, lockedLetters, position+1);
+			   tempList = getWords(subString+lockedLetters[position], bag, lockedLetters, position+1, sizeOfBag);
 				if(tempList != null){
 					list.addAll(tempList);
 				}
@@ -139,7 +140,7 @@ public class Dictionary {
 				Character removed = it.next();
 				subString += removed;
 				tempBag.remove(tempBag.indexOf(removed));
-				tempList = getWords(subString, tempBag, lockedLetters, position+1);
+				tempList = getWords(subString, tempBag, lockedLetters, position+1, sizeOfBag);
 				if(tempList != null){
 					list.addAll(tempList);
 				}
@@ -168,7 +169,7 @@ public class Dictionary {
 	    }
 	    for(int i = min; i < max+1; i++){
 		    if(i == min || lockedLetters[i-1] == '_'){
-			    lists[i] = getWords("", bag, lockedLetters, i);
+			    lists[i] = getWords("", bag, lockedLetters, i, bag.size());
 		    }
 	    }
 	    return lists;
@@ -180,10 +181,6 @@ public class Dictionary {
 		List<Character> rack = new ArrayList<Character>();
 		rack.add('a');
 		rack.add('t');
-		rack.add('e');
-		rack.add('e');
-		rack.add('e');
-		rack.add('e');
 		rack.add('e');
 		List<String>[] list = dict.getWords(rack, row);
 		for(int i = 0; i < list.length; i++){
