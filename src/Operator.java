@@ -23,7 +23,7 @@ public class Operator {
         this.bag = new Bag();
         this.playerA = new Player(this.bag.drawPlayerStacks());
         this.playerB = new Player(this.bag.drawPlayerStacks());
-        //this.gui = new GUI(this);
+        this.gui = new GUI(this);
     }
 
     public void makeMove() {
@@ -41,13 +41,17 @@ public class Operator {
 
         if (this.turn) {
             this.playerA.addScore(score);
-            this.playerA.removeWord(placement.getRack());
+            String usedRack = placement.getRack();
+            System.out.println("Rack " + usedRack + ", word " + placement.getWord());
+            this.playerA.removeWord(usedRack);
             while(!this.playerA.isRackFull()) {
                  this.playerA.addLetter(this.bag.drawLetter());
             }
         } else {
             this.playerB.addScore(score);
-            this.playerB.removeWord(placement.getRack());
+            String usedRack = placement.getRack();
+            System.out.println("Rack " + usedRack + ", word " + placement.getWord());
+            this.playerB.removeWord(usedRack);
             while(!this.playerB.isRackFull()) {
                  this.playerB.addLetter(this.bag.drawLetter());
             }

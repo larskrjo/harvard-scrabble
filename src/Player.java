@@ -35,7 +35,7 @@ public class Player {
     }
 
     public void removeLetter(char letter) {
-        this.letters.remove(letter);
+        this.letters.remove(this.letters.indexOf(letter));
     }
 
     public boolean isRackFull() {
