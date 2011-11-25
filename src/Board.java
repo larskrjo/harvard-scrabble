@@ -224,7 +224,7 @@ public class Board{
 
     public static void main(String[] args) {
         Board board = new Board();
-        System.out.println(board.addWord("ssssssss", 14, 0, true));
-        System.out.print(board);
+        //System.out.println(board.addWord("ssssssss", 14, 0, true));
+        //System.out.print(board);
     }
 }
