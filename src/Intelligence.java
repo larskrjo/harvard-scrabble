@@ -1,4 +1,3 @@
-import com.sun.corba.se.spi.ior.MakeImmutable;
 import dictionary.Dictionary;
 
 import java.util.ArrayList;
@@ -133,6 +132,8 @@ public class Intelligence {
 
         for (Placement candidate : candidates) {
             int score = board.computeScore(candidate);
+            candToScore.put(candidate, score);
+
             if (rackEvaluation) {
                 // Compute rackLeave with candidate placement
                 String rackLeave = rack;
@@ -146,7 +147,7 @@ public class Intelligence {
 
             }
             // (...)
-            candToScore.put(candidate, score);
+
         }
         Placement theBest = null;
         int theBestScore = Integer.MIN_VALUE;
