@@ -32,22 +32,30 @@ public class Dictionary {
         }
 	    createDAWG();
 
-	    List<Character> chars = new ArrayList<Character>();
-	    chars.add('e');
-	    chars.add('h');
-	    chars.add('l');
-	    chars.add('l');
-	    chars.add('o');
-	    chars.add('r');
-	    chars.add('s');
-	    chars.add('t');
+	    List<Character> bag = new ArrayList<Character>();
+	    fillBag(bag);
 	    long time = System.currentTimeMillis();
-	    List<String> words = getWords("", chars);
+	    List<Character> lockedLetters = new ArrayList<Character>(15);
+	    lockedLetters.add(2, 'e');
+	    lockedLetters.add(4, 'a');
+	    lockedLetters.add(5, 'p');
+	    List<String> words = getCorrectWords("", bag, lockedLetters, 0);
 	    time = System.currentTimeMillis()-time;
 	    System.out.println("Found: " + words);
 	    System.out.println("Number of elements: " + words.size());
 	    System.out.println("Time used: " + time + "ms");
     }
+
+	private void fillBag(List<Character> bag){
+		bag.add('e');
+	    bag.add('h');
+	    bag.add('l');
+	    bag.add('l');
+	    bag.add('o');
+	    bag.add('r');
+	    bag.add('s');
+	    bag.add('t');
+	}
 
 	/**
 	 * Created the DAWG that will be easily searchable.
@@ -140,8 +148,52 @@ public class Dictionary {
 		return list;
 	}
 
+	public List<String> getCorrectWords(String subString, List<Character> bag, List<Character> lockedLetters, int position){
+		List<String> list = new ArrayList<String>();
+		Type type = search(subString);
+		if(type == Type.END_OF_WORD){
+			list.add(subString);
+		}
+		else if (type == Type.END_OF_STRING){
+			List<String> returnValue = new ArrayList<String>();
+			returnValue.add(subString);
+			return returnValue;
+		} else if (bag.size() == 0){
+			return null;
+		}
+		List<String> tempList;
+		if(lockedLetters.get(position) != null && position < 15){
+			   tempList = getCorrectWords(subString+lockedLetters.get(position), bag, lockedLetters, position+1);
+				if(tempList != null){
+					list.addAll(tempList);
+				}
+		}
+		else {
+			List<Character> tempBag = new ArrayList<Character>(bag.size());
+			Set<Character> tempSet = new HashSet<Character>();
+			for(Character item: bag) tempBag.add(item);
+			for(Character item: bag) tempSet.add(item);
+			Iterator<Character> it = tempSet.iterator();
+			while(it.hasNext()){
+				// Add a new character to the string and remove it from the bag.
+				Character removed = it.next();
+				subString += removed;
+				tempBag.remove(tempBag.indexOf(removed));
+				tempList = getCorrectWords(subString, tempBag, lockedLetters, position+1);
+				if(tempList != null){
+					list.addAll(tempList);
+				}
+				// Revert, and shift character.
+				subString = subString.substring(0,subString.length()-1);
+				tempBag.add(removed);
+			}
+		}
+
+		return list;
+	}
+
     public static void main(String[] args) {
         Dictionary dict = new Dictionary();
-	    System.out.println(dict.search("pigb"));
+	    System.out.println(dict.search("x"));
     }
 }
