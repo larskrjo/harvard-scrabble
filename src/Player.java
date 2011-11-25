@@ -28,16 +28,24 @@ public class Player {
         return list;
     }
 
+    public void removeWord(String str) {
+        for (char letter : str.toCharArray()) {
+            removeLetter(letter);
+        }
+    }
+
     public void removeLetter(char letter) {
         this.letters.remove(letter);
     }
 
-    public boolean addLetter(char letter) {
+    public boolean isRackFull() {
+        return this.letters.size() == 7;
+    }
+
+    public void addLetter(char letter) {
         if (this.letters.size() < 7) {
             this.letters.add(letter);
-            return true;
         }
-        return false;
     }
 
     public boolean hasLetter(char letter) {

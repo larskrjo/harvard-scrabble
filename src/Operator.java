@@ -34,15 +34,24 @@ public class Operator {
             rack = this.playerB.getLetters().toString();
         }
         Placement placement = Intelligence.getPlacement(this.dictionary, this.board, rack);
-       // this.board.addWord(placement);
+
+        this.board.addWord(placement);
+        int score = this.board.computeScore(placement);
+
         if (this.turn) {
-            ;
+            this.playerA.addScore(score);
+            //this.playerA.removeWord(placement.getRack());
+            while(!this.playerA.isRackFull()) {
+                 this.playerA.addLetter(this.bag.drawLetter());
+            }
         } else {
-            rack = this.playerB.getLetters().toString();
+            this.playerB.addScore(score);
+            //this.playerB.removeWord(placement.getRack());
+            while(!this.playerB.isRackFull()) {
+                 this.playerB.addLetter(this.bag.drawLetter());
+            }
         }
         this.gui.update();
-        //Do changes on Board and GUI
-        //Update player (remove and add letters)
         changeTurn();
     }
 

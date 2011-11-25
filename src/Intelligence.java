@@ -33,10 +33,6 @@ public class Intelligence {
         return candidatesSubset;
     }
 
-    public static int evalFunction(String word) {
-        return simpleGreedy(word);
-    }
-
     //public static ArrayList<Placement> getCandidatesSubsetHorizontal(Dictionary dict, Board board, String rack, Tuple position) {
         // Find open spaces (up to seven or space before first letter) left of position and right (up to seven) of position
 
@@ -50,15 +46,6 @@ public class Intelligence {
     //}
 
     //public ArrayList<Placement>
-
-    public static int simpleGreedy(String word) {
-	    int score = 0;
-	    char[] letters = word.toCharArray();
-	    for (char letter : letters) {
-		    score += Score.letterScore(letter);
-	    }
-	    return score;
-    }
 
     public static void main(String[] args){
         System.out.println("test");
