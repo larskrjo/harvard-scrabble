@@ -35,10 +35,13 @@ public class Dictionary {
 	    List<Character> bag = new ArrayList<Character>();
 	    fillBag(bag);
 	    long time = System.currentTimeMillis();
-	    List<Character> lockedLetters = new ArrayList<Character>(15);
-	    lockedLetters.add(2, 'e');
-	    lockedLetters.add(4, 'a');
-	    lockedLetters.add(5, 'p');
+	    char[] lockedLetters = new char[15];
+	    for(int i = 0; i < lockedLetters.length; i++){
+		    lockedLetters[i] = '_';
+	    }
+	    lockedLetters[2] = 'e';
+	    lockedLetters[4] = 'a';
+	    lockedLetters[5] = 'p';
 	    List<String> words = getCorrectWords("", bag, lockedLetters, 0);
 	    time = System.currentTimeMillis()-time;
 	    System.out.println("Found: " + words);
@@ -55,6 +58,15 @@ public class Dictionary {
 	    bag.add('r');
 	    bag.add('s');
 	    bag.add('t');
+	}
+
+	private boolean containLockedLetter(char[] lockedLetters, int position){
+		for(int i = 0; i < position+1; i++){
+			if(lockedLetters[i] != '_'){
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -148,22 +160,28 @@ public class Dictionary {
 		return list;
 	}
 
-	public List<String> getCorrectWords(String subString, List<Character> bag, List<Character> lockedLetters, int position){
+	public List<String> getCorrectWords(String subString, List<Character> bag, char[] lockedLetters, int position){
 		List<String> list = new ArrayList<String>();
 		Type type = search(subString);
-		if(type == Type.END_OF_WORD){
-			list.add(subString);
+		if(type == Type.END_OF_WORD && containLockedLetter(lockedLetters, position)){
+			if(position == 14 || lockedLetters[position+1] == '_'){
+				list.add(subString);
+			}
 		}
 		else if (type == Type.END_OF_STRING){
-			List<String> returnValue = new ArrayList<String>();
-			returnValue.add(subString);
-			return returnValue;
-		} else if (bag.size() == 0){
+			if(containLockedLetter(lockedLetters, position) && (position == 14 || lockedLetters[position+1] ==
+					'_')){
+				List<String> returnValue = new ArrayList<String>();
+				returnValue.add(subString);
+				return returnValue;
+			}
+			return null;
+		} else if (bag.size() == 0 || position == 15){
 			return null;
 		}
 		List<String> tempList;
-		if(lockedLetters.get(position) != null && position < 15){
-			   tempList = getCorrectWords(subString+lockedLetters.get(position), bag, lockedLetters, position+1);
+		if(lockedLetters[position] != '_'){
+			   tempList = getCorrectWords(subString+lockedLetters[position], bag, lockedLetters, position+1);
 				if(tempList != null){
 					list.addAll(tempList);
 				}
@@ -188,7 +206,6 @@ public class Dictionary {
 				tempBag.add(removed);
 			}
 		}
-
 		return list;
 	}
 
