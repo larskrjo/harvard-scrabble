@@ -28,4 +28,26 @@ public class Score {
         }
     }
 
+    public static double rackWeight(String word) {
+        double score = 0;
+        char[] letters = word.toCharArray();
+        for (char letter : letters) {
+            if (isVowel(letter)) {
+                score += 1;
+            } else {
+                score -= 1;
+            }
+        }
+        score = score/letters.length;
+        return score;
+    }
+
+    public static boolean isVowel(char letter) {
+        if (letter == 'a' || letter == 'e' || letter == 'i' || letter == 'o' || letter == 'u' || letter == 'y') {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 }

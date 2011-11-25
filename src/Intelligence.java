@@ -1,3 +1,4 @@
+import com.sun.corba.se.spi.ior.MakeImmutable;
 import dictionary.Dictionary;
 
 import java.util.ArrayList;
@@ -8,7 +9,7 @@ import java.util.ArrayList;
  * Date: 17.11.11
  * Time: 17.19
  * To change this template use File | Settings | File Templates.
- */
+// */
 public class Intelligence {
 
     public static Placement getPlacement(Dictionary dict, Board board, String rack) {
@@ -32,6 +33,10 @@ public class Intelligence {
         return candidatesSubset;
     }
 
+    public static int evalFunction(String word) {
+        return simpleGreedy(word);
+    }
+
     //public static ArrayList<Placement> getCandidatesSubsetHorizontal(Dictionary dict, Board board, String rack, Tuple position) {
         // Find open spaces (up to seven or space before first letter) left of position and right (up to seven) of position
 
@@ -46,8 +51,17 @@ public class Intelligence {
 
     //public ArrayList<Placement>
 
+    public static int simpleGreedy(String word) {
+	    int score = 0;
+	    char[] letters = word.toCharArray();
+	    for (char letter : letters) {
+		    score += Score.letterScore(letter);
+	    }
+	    return score;
+    }
+
     public static void main(String[] args){
 
-    }
+      }
 
 }
