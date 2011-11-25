@@ -38,7 +38,7 @@ public class Dictionary {
 	    bag.add('l');
 	    bag.add('l');
 	    bag.add('o');
-	    bag.add('r');
+	    bag.add('y');
 	    bag.add('s');
 	    bag.add('e');
 	    long time = System.currentTimeMillis();
@@ -46,11 +46,9 @@ public class Dictionary {
 	    for(int i = 0; i < lockedLetters.length; i++){
 		    lockedLetters[i] = '_';
 	    }
-	    lockedLetters[2] = 'e';
-	    lockedLetters[4] = 'y';
-	    lockedLetters[9] = 'f';
-	    lockedLetters[11] = 'a';
-	    lockedLetters[12] = 't';
+	    lockedLetters[1] = 'p';
+	    lockedLetters[2] = 'i';
+	    lockedLetters[4] = 't';
 	    List<String>[] lists = getWords(bag, lockedLetters);
 	    time = System.currentTimeMillis()-time;
 	    int size = 0;
