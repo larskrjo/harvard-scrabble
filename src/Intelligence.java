@@ -55,18 +55,20 @@ public class Intelligence {
             }
             List<String> []candList = dict.getWords(charList, lockedLetters);
             for (int i = 0; i < candList.length; i++) {
-                for (int k = 0; k < candList[i].size(); i++) {
-                    String word = candList[i].get(k);
-                    int index = i;
-                    String theRack = "";
-                    int counter = 0;
-                    for (int j = index; j < word.length() + index; j++) {
-                        if (board.getField(rw, j).getLetter() != word.charAt(counter)) {
-                            theRack += word.charAt(counter);
+                if (candList[i].size() > 0 && candList[i].get(0) != null) {
+                    for (int k = 0; k < candList[i].size(); i++) {
+                        String word = candList[i].get(k);
+                        int index = i;
+                        String theRack = "";
+                        int counter = 0;
+                        for (int j = index; j < word.length() + index; j++) {
+                            if (board.getField(rw, j).getLetter() != word.charAt(counter)) {
+                                theRack += word.charAt(counter);
+                            }
+                            counter++;
                         }
-                        counter++;
+                        candidates.add(new Placement(word, rack, rw, index,  true));
                     }
-                    candidates.add(new Placement(word, rack, rw, index,  true));
                 }
             }
         }
@@ -100,6 +102,14 @@ public class Intelligence {
 
     public static void main(String[] args){
         Dictionary dict = new Dictionary();
+        Board board = new Board();
+        System.out.println(board);
+        System.out.println(board.computeScore(new Placement("test", "test", 7, 5, true)));
+        board.addWord(new Placement("test", "test", 7, 5, true));
+        System.out.println(board);
+        ArrayList<Placement> placements = getCandidates(dict, board, "abcdefg");
+        System.out.println(placements.size());
+        System.out.println("I got this far");
       }
 
     public static Placement useHeuristics(Board board, String rack, ArrayList<Placement> candidates) {
