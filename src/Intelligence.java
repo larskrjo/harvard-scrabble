@@ -1,5 +1,6 @@
 import com.sun.corba.se.spi.ior.MakeImmutable;
 import dictionary.Dictionary;
+import sun.jvm.hotspot.oops.Array;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -14,13 +15,13 @@ import java.util.List;
 // */
 public class Intelligence {
 
-    public static final boolean rackEvaluation = true;
+    public static final boolean rackEvaluation = false;
     public static final boolean balance = true;
     public static final boolean doubles = true;
     public static final boolean triples = true;
     public static final boolean specials = true;
 
-    public static final boolean positionEvaluation = true;
+    public static final boolean positionEvaluation = false;
     public static final boolean doubleWord = true;
     public static final boolean tripleWord = true;
     public static final boolean doubleLetter = true;
@@ -52,19 +53,22 @@ public class Intelligence {
                     lockedLetters[cl] = board.getField(rw,cl).getLetter();
                 }
             }
-            // Lars Kristian's function
-            // NB! ASSUMPTION
-            String word = "";
-            int index = 0;
-            String theRack = "";
-            int counter = 0;
-            for (int i = index; i < word.length() + index; i++) {
-                if (board.getField(rw, i).getLetter() != word.charAt(counter)) {
-                    theRack += word.charAt(counter);
+            List<String> []candList = dict.getWords(charList, lockedLetters);
+            for (int i = 0; i < candList.length; i++) {
+                for (int k = 0; k < candList[i].size(); i++) {
+                    String word = candList[i].get(k);
+                    int index = i;
+                    String theRack = "";
+                    int counter = 0;
+                    for (int j = index; j < word.length() + index; j++) {
+                        if (board.getField(rw, j).getLetter() != word.charAt(counter)) {
+                            theRack += word.charAt(counter);
+                        }
+                        counter++;
+                    }
+                    candidates.add(new Placement(word, rack, rw, index,  true));
                 }
-                counter++;
             }
-            candidates.add(new Placement(word, rack, rw, index,  true));
         }
 
         // Vertical computations
@@ -74,25 +78,28 @@ public class Intelligence {
                     lockedLetters[rw] = board.getField(rw,cl).getLetter();
                 }
             }
-            // Lars Kristian's function
-            // NB! ASSUMPTION
-            String word = "";
-            int index = 0;
-            String theRack = "";
-            int counter = 0;
-            for (int i = index; i < word.length() + index; i++) {
-                if (board.getField(i, cl).getLetter() != word.charAt(counter)) {
-                    theRack += word.charAt(counter);
+            List<String> []candList = dict.getWords(charList, lockedLetters);
+            for (int i = 0; i < candList.length; i++) {
+                for (int k = 0; k < candList[i].size(); i++) {
+                    String word = candList[i].get(k);
+                    int index = i;
+                    String theRack = "";
+                    int counter = 0;
+                    for (int j = index; j < word.length() + index; j++) {
+                        if (board.getField(cl, j).getLetter() != word.charAt(counter)) {
+                            theRack += word.charAt(counter);
+                        }
+                        counter++;
+                    }
+                    candidates.add(new Placement(word, rack, cl, index,  false));
                 }
-                counter++;
             }
-            candidates.add(new Placement(word, rack, index, cl,  false));
         }
         return candidates;
     }
 
     public static void main(String[] args){
-        System.out.print("JKFLDKSJ");
+        Dictionary dict = new Dictionary();
       }
 
     public static Placement useHeuristics(Board board, String rack, ArrayList<Placement> candidates) {
