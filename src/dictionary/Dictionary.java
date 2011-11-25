@@ -31,36 +31,6 @@ public class Dictionary {
             System.out.println(ex);
         }
 	    createDAWG();
-
-	    List<Character> bag = new ArrayList<Character>();
-	    bag.add('e');
-	    bag.add('h');
-	    bag.add('l');
-	    bag.add('l');
-	    bag.add('o');
-	    bag.add('y');
-	    bag.add('s');
-	    bag.add('e');
-	    long time = System.currentTimeMillis();
-	    char[] lockedLetters = new char[15];
-	    for(int i = 0; i < lockedLetters.length; i++){
-		    lockedLetters[i] = '_';
-	    }
-	    lockedLetters[1] = 'p';
-	    lockedLetters[2] = 'i';
-	    lockedLetters[4] = 't';
-	    List<String>[] lists = getWords(bag, lockedLetters);
-	    time = System.currentTimeMillis()-time;
-	    int size = 0;
-	    for( int i = 0; i < lists.length; i++){
-			System.out.println("Found: " + lists[i]);
-		    if(lists[i] != null){
-			    size += lists[i].size();
-		    }
-
-	    }
-	    System.out.println("Number of elements: " + size);
-	    System.out.println("Time used: " + time + "ms");
     }
 
 	private boolean containLockedLetter(char[] lockedLetters, int position){
@@ -128,7 +98,7 @@ public class Dictionary {
 		return currentNode.getType();
 	}
 
-	public List<String> getCorrectWords(String subString, List<Character> bag, char[] lockedLetters, int position){
+	public List<String> getWords(String subString, List<Character> bag, char[] lockedLetters, int position){
 		List<String> list = new ArrayList<String>();
 		Type type = search(subString);
 		if(type == Type.END_OF_WORD && containLockedLetter(lockedLetters, position) && position == 15){
@@ -152,7 +122,7 @@ public class Dictionary {
 		}
 		List<String> tempList;
 		if(lockedLetters[position] != '_'){
-			   tempList = getCorrectWords(subString+lockedLetters[position], bag, lockedLetters, position+1);
+			   tempList = getWords(subString+lockedLetters[position], bag, lockedLetters, position+1);
 				if(tempList != null){
 					list.addAll(tempList);
 				}
@@ -168,7 +138,7 @@ public class Dictionary {
 				Character removed = it.next();
 				subString += removed;
 				tempBag.remove(tempBag.indexOf(removed));
-				tempList = getCorrectWords(subString, tempBag, lockedLetters, position+1);
+				tempList = getWords(subString, tempBag, lockedLetters, position+1);
 				if(tempList != null){
 					list.addAll(tempList);
 				}
@@ -193,11 +163,8 @@ public class Dictionary {
 		     }
 	    }
 	    for(int i = min; i < max+1; i++){
-		    lists[i] = getCorrectWords("", bag, lockedLetters, i);
+		    lists[i] = getWords("", bag, lockedLetters, i);
 	    }
 	    return lists;
-    }
-	public static void main(String[] args) {
-        Dictionary dict = new Dictionary();
     }
 }
