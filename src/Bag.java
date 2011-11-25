@@ -72,6 +72,10 @@ public class Bag {
         return letters;
     }
 
+    public boolean isEmpty() {
+        return this.letters.isEmpty();
+    }
+
     public List<Character> getLetters() {
         return letters;
     }

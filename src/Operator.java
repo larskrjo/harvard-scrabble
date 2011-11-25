@@ -55,8 +55,32 @@ public class Operator {
         changeTurn();
     }
 
+    public boolean endGame() {
+        return this.bag.isEmpty();
+    }
+
     public boolean isTurn() {
         return this.turn;
+    }
+
+    public Player winner() {
+        if (this.playerA.getScore() > this.playerB.getScore()) {
+            return this.playerA;
+        } else if(this.playerA.getScore() < this.playerB.getScore()) {
+            return this.playerB;
+        } else {
+            return null;
+        }
+    }
+
+    public String winnerToString() {
+        if (winner() == this.playerA) {
+            return "Player A";
+        } else if (winner() == this.playerB) {
+            return "Player B";
+        } else {
+            return "Draw";
+        }
     }
 
     public void setTurn(boolean A) {
@@ -65,5 +89,13 @@ public class Operator {
 
     public void changeTurn() {
         this.turn = !this.turn;
+    }
+
+    public static void main(String[] args) {
+        Operator operator = new Operator();
+        while(!operator.endGame()) {
+            operator.makeMove();
+        }
+        System.out.println("The winner is: " + operator.winnerToString() + " with a total score: " + operator.winner().getScore());
     }
 }
