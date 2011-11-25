@@ -48,6 +48,9 @@ public class Intelligence {
 	    }
         // Horizontal computations
         for (int rw = 0; rw < 15; rw++) {
+            for(int i = 0; i < lockedLetters.length; i++){
+		    lockedLetters[i] = '_';
+	        }
             for (int cl = 0; cl < 15; cl++) {
                 if (board.getField(rw,cl).getLetter() != ' ') {
                     lockedLetters[cl] = board.getField(rw,cl).getLetter();
@@ -55,8 +58,9 @@ public class Intelligence {
             }
             List<String> []candList = dict.getWords(charList, lockedLetters);
             for (int i = 0; i < candList.length; i++) {
-                if (candList[i].size() > 0 && candList[i].get(0) != null) {
-                    for (int k = 0; k < candList[i].size(); i++) {
+                if (candList[i] != null && candList[i].size() > 0) {
+                    System.out.println(candList[i].size());
+                    for (int k = 0; k < candList[i].size(); k++) {
                         String word = candList[i].get(k);
                         int index = i;
                         String theRack = "";
@@ -75,6 +79,9 @@ public class Intelligence {
 
         // Vertical computations
         for (int cl = 0; cl < 15; cl++) {
+            for(int i = 0; i < lockedLetters.length; i++){
+		        lockedLetters[i] = '_';
+	        }
             for (int rw = 0; rw < 15; rw++) {
                 if (board.getField(rw,cl).getLetter() != ' ') {
                     lockedLetters[rw] = board.getField(rw,cl).getLetter();
@@ -82,18 +89,21 @@ public class Intelligence {
             }
             List<String> []candList = dict.getWords(charList, lockedLetters);
             for (int i = 0; i < candList.length; i++) {
-                for (int k = 0; k < candList[i].size(); i++) {
-                    String word = candList[i].get(k);
-                    int index = i;
-                    String theRack = "";
-                    int counter = 0;
-                    for (int j = index; j < word.length() + index; j++) {
-                        if (board.getField(cl, j).getLetter() != word.charAt(counter)) {
-                            theRack += word.charAt(counter);
+                if (candList[i] != null && candList[i].size() > 0) {
+                    for (int k = 0; k < candList[i].size(); k++) {
+                        String word = candList[i].get(k);
+                        int index = i;
+                        String theRack = "";
+                        int counter = 0;
+                        for (int j = index; j < word.length() + index; j++) {
+                            if (board.getField(cl, j).getLetter() != word.charAt(counter)) {
+                                theRack += word.charAt(counter);
+                            }
+                            counter++;
                         }
-                        counter++;
-                    }
                     candidates.add(new Placement(word, rack, cl, index,  false));
+                    }
+
                 }
             }
         }
@@ -104,12 +114,16 @@ public class Intelligence {
         Dictionary dict = new Dictionary();
         Board board = new Board();
         System.out.println(board);
-        System.out.println(board.computeScore(new Placement("test", "test", 7, 5, true)));
-        board.addWord(new Placement("test", "test", 7, 5, true));
+        board.addWord(new Placement("something", 7, 0, true));
+        board.addWord(new Placement("test", 7, 4, false));
         System.out.println(board);
         ArrayList<Placement> placements = getCandidates(dict, board, "abcdefg");
         System.out.println(placements.size());
+        for (int i = 0; i < placements.size(); i++) {
+            System.out.print(placements.get(i));
+        }
         System.out.println("I got this far");
+        System.out.println(getPlacement(dict, board, "abcdefg"));
       }
 
     public static Placement useHeuristics(Board board, String rack, ArrayList<Placement> candidates) {

@@ -50,4 +50,8 @@ public class Placement {
     public String getRack() {
         return this.rack;
     }
+
+    public String toString() {
+        return this.word + " at row: " + this.row + " and col: " + this.col + "in " + this.direction + " direction.\n";
+    }
 }
