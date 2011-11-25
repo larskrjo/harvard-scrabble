@@ -53,7 +53,7 @@ public class Dictionary {
 	 * Created the DAWG that will be easily searchable.
 	 */
     public void createDAWG() {
-        DAWG = new Node(' ', Type.NOT_A_WORD, null);
+        DAWG = new Node(' ', Type.NOT_YET_A_WORD, null);
 	    Node currentNode;
 	    Node childNode;
 	    Node smiliarChildNode;
@@ -62,7 +62,7 @@ public class Dictionary {
             char[] word = words[i].toCharArray();
 	        for(int j = 0; j < word.length; j++){
 		        // Make the child node if not existing
-		        childNode = new Node(word[j], Type.NOT_A_WORD, currentNode);
+		        childNode = new Node(word[j], Type.NOT_YET_A_WORD, currentNode);
 		        if(j == word.length-1){
 			        childNode.setType(Type.END_OF_STRING);
 		        }
@@ -72,7 +72,7 @@ public class Dictionary {
 				    currentNode = childNode;
 			    } // Edit child node if it exists
 		        else {
-				    if ((childNode.getType() == Type.NOT_A_WORD && smiliarChildNode.getType() == Type.END_OF_STRING)){
+				    if ((childNode.getType() == Type.NOT_YET_A_WORD && smiliarChildNode.getType() == Type.END_OF_STRING)){
 						smiliarChildNode.setType(Type.END_OF_WORD);
 				    }
 				    currentNode = smiliarChildNode;
@@ -92,10 +92,13 @@ public class Dictionary {
 		Node currentNode = DAWG;
 		Node tempNode;
 		for (int i = 0; i < word.length; i++){
-			tempNode = new Node(word[i], Type.NOT_A_WORD, currentNode);
+			tempNode = new Node(word[i], Type.NOT_YET_A_WORD, currentNode);
 			Node tempComparisonNode = currentNode.contain(tempNode);
-			if(tempComparisonNode == null || (tempComparisonNode.getType() == Type.NOT_A_WORD && i == word.length-1)){
-				return Type.NOT_A_WORD;
+			if(tempComparisonNode == null){
+				return Type.NOT_POSSIBLY_A_WORD;
+			}
+			else if(tempComparisonNode.getType() == Type.NOT_YET_A_WORD && i == word.length-1){
+				return Type.NOT_YET_A_WORD;
 			}
 			currentNode = tempComparisonNode;
 		}
@@ -139,5 +142,6 @@ public class Dictionary {
 
     public static void main(String[] args) {
         Dictionary dict = new Dictionary();
+	    System.out.println(dict.search("pigb"));
     }
 }
