@@ -1,4 +1,6 @@
 import org.omg.CORBA.INITIALIZE;
+import java.util.ArrayList;
+
 
 /**
  * Created by IntelliJ IDEA.
@@ -184,6 +186,18 @@ public class Board{
     private void addLetter(char letter, int rw, int cl) {
         // Adds a letter to the board
         this.grid[rw][cl].setLetter(letter);
+    }
+
+    public ArrayList<Tuple> getLetterPositions() {
+        ArrayList<Tuple> positions = new ArrayList<Tuple>();
+        for (int rw = 0; rw < 15; rw++) {
+            for (int cl = 0; cl < 15; cl++) {
+                if (this.grid[rw][cl].getLetter() != ' ') {
+                    positions.add(new Tuple(rw, cl));
+                }
+            }
+        }
+        return positions;
     }
 
     public String toString() {
