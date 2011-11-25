@@ -5,7 +5,7 @@
  * Time: 16.24
  * To change this template use File | Settings | File Templates.
  */
-public class Candidate {
+public class Candidate implements Comparable<Candidate>{
 
     public Placement placement;
     public int score;
@@ -27,11 +27,17 @@ public class Candidate {
         this.score = score;
     }
 
+    public String toString() {
+        return this.placement.getWord() + ", " + this.score;
+    }
+
     public int compareTo(Candidate candidate) {
         if (this.getScore() > candidate.getScore()) {
-
-        } else if (this.) {
-
+            return 1;
+        } else if (this.getScore() < candidate.getScore()) {
+            return -1;
+        } else {
+            return 0;
         }
     }
 
