@@ -27,4 +27,12 @@ public class Candidate {
         this.score = score;
     }
 
+    public int compareTo(Candidate candidate) {
+        if (this.getScore() > candidate.getScore()) {
+
+        } else if (this.) {
+
+        }
+    }
+
 }

@@ -225,6 +225,10 @@ public class Board{
         return string;
     }
 
+    public Field[][] getGrid() {
+        return this.grid;
+    }
+
     public static void main(String[] args) {
 
     }

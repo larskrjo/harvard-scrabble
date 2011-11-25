@@ -54,7 +54,7 @@ public class Intelligence {
                     lockedLetters[cl] = board.getField(rw,cl).getLetter();
                 }
             }
-            List<String> []candList = dict.getWords(charList, lockedLetters);
+            List<String> []candList = dict.getWords(charList, board, rw, true);
             for (int i = 0; i < candList.length; i++) {
                 if (candList[i] != null && candList[i].size() > 0) {
                     System.out.println(candList[i].size());
@@ -85,7 +85,7 @@ public class Intelligence {
                     lockedLetters[rw] = board.getField(rw,cl).getLetter();
                 }
             }
-            List<String> []candList = dict.getWords(charList, lockedLetters);
+            List<String> []candList = dict.getWords(charList, board, cl, false);
             for (int i = 0; i < candList.length; i++) {
                 if (candList[i] != null && candList[i].size() > 0) {
                     for (int k = 0; k < candList[i].size(); k++) {
@@ -126,6 +126,11 @@ public class Intelligence {
 
     public static Placement useHeuristics(Board board, String rack, ArrayList<Placement> candidates) {
         Hashtable<Placement, Integer> candToScore = new Hashtable<Placement, Integer>();
+
+        ArrayList<Candidate> candScores = new ArrayList<Candidate>();
+        for (Placement candidate : candidates) {
+            candScores.add(new Candidate(candidate, board.computeScore(candidate)));
+        }
 
         // NOTE: maybe smart to sort by raw score and then only compute (expensive) heuristic calculations
         //       on subset (for instance 20 - 30) of candidates
