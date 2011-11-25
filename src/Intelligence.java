@@ -61,7 +61,19 @@ public class Intelligence {
     }
 
     public static void main(String[] args){
+        System.out.println("test");
+        Dictionary dict = new Dictionary();
+        System.out.println(dict.search("arg"));
+        System.out.println(dict.search("xxx"));
+        System.out.println(dict.search("the"));
+        System.out.println(dict.search("advocacy"));
 
       }
+
+    public static ArrayList<String> getWords(String rack, ArrayList<Fixed> fixed) {
+        ArrayList<String> words = new ArrayList<String>();
+
+        return words;
+    }
 
 }

@@ -1,3 +1,4 @@
+import dictionary.Dictionary;
 import org.omg.CORBA.INITIALIZE;
 import java.util.ArrayList;
 
@@ -47,7 +48,12 @@ public class Board{
         }
     }
 
-    public int addWord(String word, int rw, int cl, boolean horizontal) {
+    public int addWord(Placement placement) {
+        String word = placement.getWord();
+        boolean horizontal = placement.getDirection();
+        int rw = placement.getRow();
+        int cl = placement.getCol();
+
         // Adds a word to board. Returns the score if successful and -1 if placement is in conflict current board (not in terms of dictionary)
         if (horizontal) {
             if (cl + word.length() > 15) {
@@ -58,7 +64,7 @@ public class Board{
                     return -1;
                 }
             }
-            int score = computeScore(word, rw, cl, horizontal);
+            int score = computeScore(placement);
             for (int i = 0; i < word.length(); i++) {
                 this.grid[rw][cl+i].setLetter(word.charAt(i));
             }
@@ -72,7 +78,7 @@ public class Board{
                     return -1;
                 }
             }
-            int score = computeScore(word, rw, cl, horizontal);
+            int score = computeScore(placement);
             for (int i = 0; i < word.length(); i++) {
                 this.grid[rw+i][cl].setLetter(word.charAt(i));
             }
@@ -80,7 +86,12 @@ public class Board{
         }
     }
 
-    public int computeScore(String word, int rw, int cl, boolean horizontal) {
+    public int computeScore(Placement placement) {
+        String word = placement.getWord();
+        boolean horizontal = placement.getDirection();
+        int rw = placement.getRow();
+        int cl = placement.getCol();
+
         // Computes the score of a given placement and -1 if placement is in conflict current board (not in terms of dictionary)
         int raw_score = 0;
         int other_score = 0;
