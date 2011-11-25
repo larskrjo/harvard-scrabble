@@ -23,7 +23,7 @@ public class Operator {
         this.bag = new Bag();
         this.playerA = new Player(this.bag.drawPlayerStacks());
         this.playerB = new Player(this.bag.drawPlayerStacks());
-        this.gui = new GUI();
+        //this.gui = new GUI(this);
     }
 
     public void makeMove() {

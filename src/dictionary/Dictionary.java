@@ -166,7 +166,9 @@ public class Dictionary {
 		    return lists;
 	    }
 	    for(int i = min; i < max+1; i++){
-		    lists[i] = getWords("", bag, lockedLetters, i);
+		    if(i == min || lockedLetters[i-1] == '_'){
+			    lists[i] = getWords("", bag, lockedLetters, i);
+		    }
 	    }
 	    return lists;
     }
