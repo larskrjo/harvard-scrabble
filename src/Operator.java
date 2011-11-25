@@ -51,8 +51,8 @@ public class Operator {
                  this.playerB.addLetter(this.bag.drawLetter());
             }
         }
-        this.gui.update();
         changeTurn();
+        this.gui.update();
     }
 
     public boolean endGame() {
