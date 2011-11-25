@@ -194,7 +194,6 @@ public class Dictionary {
 			     max = i;
 		     }
 	    }
-	    System.out.print("min:" + min + " max" + max);
 	    for(int i = min; i < max+1; i++){
 		    lists[i] = getCorrectWords("", bag, lockedLetters, i);
 	    }
