@@ -94,6 +94,8 @@ public class Operator {
 
     public static void main(String[] args) {
         Operator operator = new Operator();
+        Placement placement = new Placement("test", 4, 4, true);
+        operator.board.addWord(placement);
         System.out.println("Spillet er opprettet");
         while(!operator.endGame()) {
             System.out.println("Inne i while");
