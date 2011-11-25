@@ -12,9 +12,9 @@ import java.io.IOException;
 import java.util.*;
 
 public class Dictionary {
-    public String[] words;
-    public File file = new File("src/dictionary/scrabblewords.txt");
-    public Node DAWG;
+    private String[] words;
+    private File file = new File("src/dictionary/scrabblewords.txt");
+    private Node DAWG;
 
     public Dictionary() {
         words = new String[172823];
@@ -45,7 +45,7 @@ public class Dictionary {
 	/**
 	 * Created the DAWG that will be easily searchable.
 	 */
-    public void createDAWG() {
+    private void createDAWG() {
         DAWG = new Node(' ', Type.NOT_YET_A_WORD, null);
 	    Node currentNode;
 	    Node childNode;
@@ -80,7 +80,7 @@ public class Dictionary {
 	 * @return The type of the last letter in the word, either END_OF_STRING or END_OF_WORD if the string was found,
 	 * or NOT_A_WORD if it was not found.
 	 */
-	public Type search(String string){
+	private Type search(String string){
 		char[] word = string.toCharArray();
 		Node currentNode = DAWG;
 		Node tempNode;
@@ -98,7 +98,7 @@ public class Dictionary {
 		return currentNode.getType();
 	}
 
-	public List<String> getWords(String subString, List<Character> bag, char[] lockedLetters, int position){
+	private List<String> getWords(String subString, List<Character> bag, char[] lockedLetters, int position){
 		List<String> list = new ArrayList<String>();
 		Type type = search(subString);
 		if(type == Type.END_OF_WORD && containLockedLetter(lockedLetters, position) && position == 15){
