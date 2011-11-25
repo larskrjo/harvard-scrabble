@@ -1,3 +1,5 @@
+import dictionary.Dictionary;
+
 import java.util.ArrayList;
 
 /**
