@@ -293,7 +293,7 @@ public class Dictionary {
 		Dictionary dict = new Dictionary();
 		Board board = new Board();
 		board.addWord(new Placement("taae", 2,0,true));
-		board.addWord(new Placement("test", 3,0,true));
+		board.addWord(new Placement("tsst", 3,0,true));
 		board.addWord(new Placement("ape", 4,3,false));
 		board.addWord(new Placement("loses", 2,4,false));
 
@@ -311,7 +311,7 @@ public class Dictionary {
 		rack.add('k');
 		rack.add('l');
 		List<String>[] list1 = dict.getWords(rack, board.getGrid(), 4, Direction.HORIZONTAL);
-		List<String>[] list2 = dict.getWords(rack, board.getGrid(), 2, Direction.VERTICAL);
+		List<String>[] list2 = dict.getWords(rack, board.getGrid(), 0, Direction.VERTICAL);
 		System.out.println("--------------------HORIZONTAL-----------------");
 		System.out.println("row: " + 4);
 		for(int i = 0; i < list1.length; i++){
