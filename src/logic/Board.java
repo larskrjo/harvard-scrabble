@@ -1,3 +1,5 @@
+package logic;
+
 import dictionary.Dictionary;
 import org.omg.CORBA.INITIALIZE;
 import java.util.ArrayList;
@@ -130,7 +132,7 @@ public class Board{
                 if (rw < 14 && this.grid[rw][cl+i].getLetter() == ' ' && this.grid[rw+1][cl+i].getLetter() != ' ') {
                     int k = 1;
                     while (rw + k <= 14 && this.grid[rw+k][cl+i].getLetter() != ' ') {
-                        other_score += Score.letterScore(this.grid[rw+k][cl+i].getLetter());
+                        other_score += Score.letterScore(this.grid[rw + k][cl + i].getLetter());
                         k++;
                     }
 
@@ -138,7 +140,7 @@ public class Board{
                 if (rw > 0 && this.grid[rw][cl+i].getLetter() == ' ' && this.grid[rw-1][cl+i].getLetter() != ' ') {
                     int k = 1;
                     while (rw - k >= 0 && this.grid[rw-k][cl+i].getLetter() != ' ') {
-                        other_score += Score.letterScore(this.grid[rw-k][cl+i].getLetter());
+                        other_score += Score.letterScore(this.grid[rw - k][cl + i].getLetter());
                         k++;
                     }
                 }
@@ -176,7 +178,7 @@ public class Board{
                 if (cl < 14 && this.grid[rw+i][cl].getLetter() == ' ' && this.grid[rw+i][cl+1].getLetter() != ' ') {
                     int k = 1;
                     while (cl + k <= 14 && this.grid[rw+i][cl+k].getLetter() != ' ') {
-                        other_score += Score.letterScore(this.grid[rw+i][cl+k].getLetter());
+                        other_score += Score.letterScore(this.grid[rw + i][cl + k].getLetter());
                         k++;
                     }
 
@@ -184,7 +186,7 @@ public class Board{
                 if (cl > 0 && this.grid[rw+i][cl].getLetter() == ' ' && this.grid[rw+i][cl-1].getLetter() != ' ') {
                     int k = 1;
                     while (cl - k >= 0 && this.grid[rw+i][cl-k].getLetter() != ' ') {
-                        other_score += Score.letterScore(this.grid[rw+i][cl-k].getLetter());
+                        other_score += Score.letterScore(this.grid[rw + i][cl - k].getLetter());
                         k++;
                     }
                 }

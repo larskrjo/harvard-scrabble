@@ -1,4 +1,7 @@
+package logic;
+
 import dictionary.Dictionary;
+import dictionary.Direction;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -55,7 +58,7 @@ public class Intelligence {
                 }
             }
             //List<String> []candList = dict.getWords(charList, board, rw, true);
-            List<String> []candList = dict.getWords(charList, lockedLetters);
+            List<String> []candList = dict.getWords(charList, board.getGrid(), rw, Direction.HORIZONTAL);
             for (int i = 0; i < candList.length; i++) {
                 if (candList[i] != null && candList[i].size() > 0) {
                     System.out.println(candList[i].size());
@@ -87,7 +90,7 @@ public class Intelligence {
                 }
             }
             //List<String> []candList = dict.getWords(charList, board, cl, false);
-            List<String> []candList = dict.getWords(charList, lockedLetters);
+            List<String> []candList = dict.getWords(charList, board.getGrid(), cl, Direction.HORIZONTAL);
             for (int i = 0; i < candList.length; i++) {
                 if (candList[i] != null && candList[i].size() > 0) {
                     for (int k = 0; k < candList[i].size(); k++) {

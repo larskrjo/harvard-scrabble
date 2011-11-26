@@ -1,3 +1,5 @@
+package logic;
+
 /**
  * Created by IntelliJ IDEA.
  * User: PalCSNjolstad

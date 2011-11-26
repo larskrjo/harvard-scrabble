@@ -1,3 +1,5 @@
+package logic;
+
 /**
  * Created by IntelliJ IDEA.
  * User: PalCSNjolstad
@@ -8,7 +10,7 @@
 public class Placement {
 
     // Class for representing a placement on the board
-    // Specifically used by the Intelligence class for returning the optimal placement
+    // Specifically used by the logic.Intelligence class for returning the optimal placement
 
     private String word;
     private String rack;

@@ -1,3 +1,8 @@
+package gui;
+
+import logic.Board;
+import logic.Operator;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -29,12 +34,12 @@ public class GUI extends JFrame{
 		c.gridwidth = 6;
 		c.gridx = 2;
 		c.gridy = 0;
-		player1 = new JLabel("Player 1");
+		player1 = new JLabel("logic.Player 1");
 		player1.setBackground(Color.GREEN);
 		player1.setOpaque(true);
 		add(player1, c);
 		c.gridx = 9;
-		player2 = new JLabel("Player 2");
+		player2 = new JLabel("logic.Player 2");
 		player2.setOpaque(true);
 		add(player2, c);
 

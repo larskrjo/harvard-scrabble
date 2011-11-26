@@ -1,4 +1,7 @@
+package logic;
+
 import dictionary.Dictionary;
+import gui.GUI;
 
 /**
  * Created by IntelliJ IDEA.
@@ -80,9 +83,9 @@ public class Operator {
 
     public String winnerToString() {
         if (winner() == this.playerA) {
-            return "Player A";
+            return "logic.Player A";
         } else if (winner() == this.playerB) {
-            return "Player B";
+            return "logic.Player B";
         } else {
             return "Draw";
         }
