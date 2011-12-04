@@ -35,9 +35,9 @@ public class Candidate implements Comparable<Candidate>{
 
     public int compareTo(Candidate candidate) {
         if (this.getScore() > candidate.getScore()) {
-            return 1;
-        } else if (this.getScore() < candidate.getScore()) {
             return -1;
+        } else if (this.getScore() < candidate.getScore()) {
+            return 1;
         } else {
             return 0;
         }

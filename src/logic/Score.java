@@ -52,4 +52,8 @@ public class Score {
         }
     }
 
+    public static boolean isConsonant(char letter) {
+        return !isVowel(letter);
+    }
+
 }

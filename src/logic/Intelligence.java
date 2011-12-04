@@ -32,6 +32,10 @@ public class Intelligence {
     public static final boolean firstTurnOpenness = true;
     public static final boolean duplicateProbability = true;
 
+    public static Placement getFirstPlacement(Dictionary dict, Board board, String rack) {
+        return null;
+    }
+
     public static Placement getPlacement(Dictionary dict, Board board, String rack) {
         ArrayList<Placement> candidates = getCandidates(dict, board, rack);
         return useHeuristics(board, rack, candidates);
@@ -137,11 +141,13 @@ public class Intelligence {
             candScores.add(new Candidate(candidate, board.computeScore(candidate)));
         }
         java.util.Collections.sort(candScores);
+        // Only compute heuristics on short-list of candidates
         for (int i = 0; i < candScores.size(); i++) {
+            if (i > 30) {
+                candScores.remove(i);
+            }
             System.out.println(candScores.get(i));
         }
-        // NOTE: maybe smart to sort by raw score and then only compute (expensive) heuristic calculations
-        //       on subset (for instance 20 - 30) of candidates
 
         for (Placement candidate : candidates) {
             int score = board.computeScore(candidate);
@@ -157,7 +163,8 @@ public class Intelligence {
                 }
             }
             if (positionEvaluation) {
-
+                // 1 - weighted distance from tripple word bonus / double word bonus and which letter facilitates placement
+                //
             }
             // (...)
 
@@ -171,5 +178,10 @@ public class Intelligence {
             }
         }
         return theBest;
+    }
+
+    public static String rackExchange(Bag bag, String rack) {
+        // Computes the optimal number of letters in rack for exchange given bag
+        return rack;
     }
 }
