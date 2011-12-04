@@ -33,6 +33,7 @@ public class Intelligence {
     public static final boolean duplicateProbability = true;
 
     public static Placement getFirstPlacement(Dictionary dict, Board board, String rack) {
+
         return null;
     }
 
@@ -146,6 +147,9 @@ public class Intelligence {
             if (i > 30) {
                 candScores.remove(i);
             }
+        }
+
+        for (int i = 0; i < candScores.size(); i++) {
             System.out.println(candScores.get(i));
         }
 
