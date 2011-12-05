@@ -29,7 +29,7 @@ public class Operator {
         this.playerA = new Player(this.bag.drawPlayerStacks());
         this.playerB = new Player(this.bag.drawPlayerStacks());
         this.gui = new GUI(this);
-        this.turn = Turn.PLAYER_A;
+	    this.turn = Turn.PLAYER_A;
     }
 
     public void makeMove() {
@@ -41,6 +41,7 @@ public class Operator {
         }
         System.out.println("Rack: " + rack);
         Placement placement = Intelligence.getPlacement(this.dictionary, this.board, rack);
+
         if(placement == null) {
             String rack_change = Intelligence.rackExchange(this.bag, rack);
             if (turn == Turn.PLAYER_A) {
@@ -59,8 +60,10 @@ public class Operator {
                 this.playerB.newPass();
             }
         } else {
+	        System.out.println("col: " + placement.getCol());
+	        System.out.println("row: " + placement.getRow());
+	        System.out.println("direction: " + placement.getDirection());
             int score = this.board.computeScore(placement);
-	        System.out.println(placement.getDirection());
             this.board.addWord(placement);
             //System.out.println("The score for this word is: " +  score);
             if (turn == Turn.PLAYER_A) {
@@ -101,14 +104,6 @@ public class Operator {
         }
     }
 
-    public void setTurn(char a) {
-        if (a == 'A') {
-            this.turn = Turn.PLAYER_A;
-        } else {
-            this.turn = Turn.PLAYER_B;
-        }
-    }
-
     public String winnerToString() {
         if (winner() == this.playerA) {
             return "logic.Player A";
@@ -134,11 +129,12 @@ public class Operator {
 	    System.out.println("Bag length:\n" + operator.bag.letters.size());
         Placement placement = new Placement("test", 4, 4, Direction.HORIZONTAL);
         operator.board.addWord(placement);
-        //while(!operator.endGame()) {
+
+        while(!operator.endGame()) {
             operator.makeMove();
             System.out.println("New bag:\n" + operator.bag);
 	        System.out.println("Bag length:\n" + operator.bag.letters.size());
-        //}
+        }
         //System.out.println("The winner is: " + operator.winnerToString() + " with a total score: " + operator.winner
 		//	    ().getScore());
     }

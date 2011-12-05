@@ -125,12 +125,12 @@ public class Intelligence {
                         String theRack = "";
                         int counter = 0;
                         for (int j = index; j < word.length() + index; j++) {
-                            if (board.getField(cl, j).getLetter() != word.charAt(counter)) {
+                            if (board.getField(j, cl).getLetter() != word.charAt(counter)) {
                                 theRack += word.charAt(counter);
                             }
                             counter++;
                         }
-                    candidates.add(new Placement(word, theRack, cl, index,  Direction.VERTICAL));
+                        candidates.add(new Placement(word, theRack, index, cl,  Direction.VERTICAL));
                     }
 
                 }
