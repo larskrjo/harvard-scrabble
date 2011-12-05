@@ -163,9 +163,9 @@ public class Heuristics {
 
     public static void main(String[] args) {
 
-        String rack = "aaingst";
+        String rack = "quoteor";
         Board board = new Board();
-        Placement placement = new Placement("step", "st", 0, 0, Direction.HORIZONTAL);
+        Placement placement = new Placement("rut", "r", 0, 0, Direction.HORIZONTAL);
         System.out.print(rackEval(board, rack, placement));
 
     }
