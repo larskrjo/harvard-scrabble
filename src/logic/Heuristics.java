@@ -22,6 +22,23 @@ public class Heuristics {
             leftInBag.remove(lettersOnBoard.get(i));
         }
 
+        List<Character> bag = Bag.getCharactersInGame();
+        int vowels = 0;
+        int cons = 0;
+        String stringVowels = "";
+        String stringCons = "";
+        for (int i = 0; i < bag.size(); i++) {
+            if (Score.isVowel(bag.get(i))) {
+                stringVowels += bag.get(i);
+                vowels++;
+            } else {
+                stringCons += bag.get(i);
+                cons++;
+            }
+        }
+        System.out.println("# of vowels: " + vowels + ": " + stringVowels);
+        System.out.println("# of cons: " + cons + ": " + stringCons);
+
         return null;
     }
 
@@ -168,16 +185,8 @@ public class Heuristics {
         Placement placement = new Placement("rut", "r", 0, 0, Direction.HORIZONTAL);
         System.out.print(rackEval(board, rack, placement));
 
+        rackExchange(board, "abcdefg");
+
     }
 
 }
-
-        /*
-        balanceMap.put(new Tuple(0.0, 0.0), 0.0);
-        balanceMap.put(new Tuple(1.0, 0.0), -0.5);
-        balanceMap.put(new Tuple(2.0, 0.0), -2.0);
-        balanceMap.put(new Tuple(3.0, 0.0), -3.0);
-        balanceMap.put(new Tuple(4.0, 0.0), -5.0);
-        balanceMap.put(new Tuple(5.0, 0.0), -7.5);
-        balanceMap.put(new Tuple(6.0, 0.0), -12.5);
-        */
