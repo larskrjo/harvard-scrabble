@@ -4,6 +4,7 @@ import dictionary.Dictionary;
 import dictionary.Direction;
 import org.omg.CORBA.INITIALIZE;
 import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -229,4 +230,17 @@ public class Board{
     public Field[][] getGrid() {
         return this.grid;
     }
+
+    public List<Character> getAllCharactersOnBoard() {
+        List<Character> chars = new ArrayList<Character>();
+        for (int rw = 0; rw < 15; rw++) {
+            for (int cl = 0; cl < 15; cl++) {
+                if (this.getField(rw, cl).getLetter() != ' ') {
+                    chars.add(this.getField(rw, cl).getLetter());
+                }
+            }
+        }
+        return chars;
+    }
+
 }

@@ -98,4 +98,9 @@ public class Bag {
         }
         return ret;
     }
+
+    public static List<Character> getCharactersInGame() {
+        return (new Bag()).letters;
+    }
+
 }

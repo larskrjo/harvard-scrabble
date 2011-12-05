@@ -9,19 +9,19 @@ package logic;
  */
 public class Tuple {
 
-    public int first;
-    public int last;
+    public double first;
+    public double last;
 
-    public Tuple(int first, int last) {
+    public Tuple(double first, double last) {
         this.first = first;
         this.last = last;
     }
 
-    public int getFirst() {
+    public double getFirst() {
         return this.first;
     }
 
-    public int getLast() {
+    public double getLast() {
         return this.last;
     }
 
