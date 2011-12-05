@@ -292,10 +292,10 @@ public class Dictionary {
 	public static void main(String[] args) {
 		Dictionary dict = new Dictionary();
 		Board board = new Board();
-		board.addWord(new Placement("taae", 2,0,true));
-		board.addWord(new Placement("tsst", 3,0,true));
-		board.addWord(new Placement("ape", 4,3,false));
-		board.addWord(new Placement("loses", 2,4,false));
+		board.addWord(new Placement("taae", 2,0,Direction.HORIZONTAL));
+		board.addWord(new Placement("tsst", 3,0,Direction.HORIZONTAL));
+		board.addWord(new Placement("ape", 4,3,Direction.VERTICAL));
+		board.addWord(new Placement("loses", 2,4,Direction.VERTICAL));
 
 		for(int i = 0; i < 8; i++){
 			for (int j = 0; j < 8; j++){

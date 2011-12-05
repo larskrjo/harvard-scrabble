@@ -1,5 +1,7 @@
 package logic;
 
+import dictionary.Direction;
+
 /**
  * Created by IntelliJ IDEA.
  * User: PalCSNjolstad
@@ -16,16 +18,16 @@ public class Placement {
     private String rack;
     private int row;
     private int col;
-    private boolean direction; // True for horizontal and False for vertical
+    private Direction direction; // True for horizontal and False for vertical
 
-    public Placement(String word, int row, int col, boolean direction) {
+    public Placement(String word, int row, int col, Direction direction) {
         this.word = word;
         this.row = row;
         this.col = col;
         this.direction = direction;
     }
 
-    public Placement(String word, String rack, int row, int col, boolean direction) {
+    public Placement(String word, String rack, int row, int col, Direction direction) {
         this.rack = rack;
         this.word = word;
         this.row = row;
@@ -45,7 +47,7 @@ public class Placement {
         return this.col;
     }
 
-    public boolean getDirection() {
+    public Direction getDirection() {
         return this.direction;
     }
 

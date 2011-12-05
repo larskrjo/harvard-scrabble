@@ -1,6 +1,7 @@
 package logic;
 
 import dictionary.Dictionary;
+import dictionary.Direction;
 import gui.GUI;
 
 import javax.swing.plaf.metal.MetalBorders;
@@ -60,7 +61,7 @@ public class Operator {
         } else {
             int score = this.board.computeScore(placement);
             this.board.addWord(placement);
-            System.out.println("The score for this word is: " +  score);
+            //System.out.println("The score for this word is: " +  score);
             if (this.turn) {
                 this.playerA.clearPass();
                 this.playerA.addScore(score);
@@ -89,10 +90,6 @@ public class Operator {
         return this.bag.isEmpty() || this.playerA.passLimit() || this.playerB.passLimit();
     }
 
-    public boolean isTurn() {
-        return this.turn;
-    }
-
     public Player winner() {
         if (this.playerA.getScore() > this.playerB.getScore()) {
             return this.playerA;
@@ -113,10 +110,6 @@ public class Operator {
         }
     }
 
-    public void setTurn(boolean A) {
-        this.turn = A;
-    }
-
     public void changeTurn() {
         this.turn = !this.turn;
     }
@@ -124,15 +117,13 @@ public class Operator {
     public static void main(String[] args) {
         Operator operator = new Operator();
         System.out.println(operator.bag);
-        Placement placement = new Placement("test", 4, 4, true);
+        Placement placement = new Placement("test", 4, 4, Direction.HORIZONTAL);
         operator.board.addWord(placement);
-        System.out.println("Spillet er opprettet");
-        while(!operator.endGame()) {
-            System.out.println("Inne i while");
+        //while(!operator.endGame()) {
             operator.makeMove();
-            System.out.println("Har gjort moves");
             System.out.println("Bagen er " + operator.bag);
-        }
-        System.out.println("The winner is: " + operator.winnerToString() + " with a total score: " + operator.winner().getScore());
+        //}
+        //System.out.println("The winner is: " + operator.winnerToString() + " with a total score: " + operator.winner
+		//	    ().getScore());
     }
 }

@@ -1,6 +1,7 @@
 package logic;
 
 import dictionary.Dictionary;
+import dictionary.Direction;
 import org.omg.CORBA.INITIALIZE;
 import java.util.ArrayList;
 
@@ -56,12 +57,11 @@ public class Board{
 
     public int addWord(Placement placement) {
         String word = placement.getWord();
-        boolean horizontal = placement.getDirection();
         int rw = placement.getRow();
         int cl = placement.getCol();
 
         // Adds a word to board. Returns the score if successful and -1 if placement is in conflict current board (not in terms of dictionary)
-        if (horizontal) {
+        if (placement.getDirection() == Direction.HORIZONTAL) {
             if (cl + word.length() > 15) {
                 return -1;
             }
@@ -94,7 +94,6 @@ public class Board{
 
     public int computeScore(Placement placement) {
         String word = placement.getWord();
-        boolean horizontal = placement.getDirection();
         int rw = placement.getRow();
         int cl = placement.getCol();
         // Computes the score of a given placement and -1 if placement is in conflict current board (not in terms of dictionary)
@@ -104,7 +103,7 @@ public class Board{
         int word_bonus = 1;
         int letters_placed = 0; // Used to determine whether full rack utilization bonus should be awarded
         int full_rack_bonus = 0;
-        if (horizontal) {
+        if (placement.getDirection() == Direction.HORIZONTAL) {
             // Computations for horizontal placement
             if (cl + word.length() > 15) {
                 return -1;
