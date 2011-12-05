@@ -38,25 +38,40 @@ public class Operator {
         }
         System.out.println("Rack: " + rack);
         Placement placement = Intelligence.getPlacement(this.dictionary, this.board, rack);
-
-        this.board.addWord(placement);
-        int score = this.board.computeScore(placement);
-
-        if (this.turn) {
-            this.playerA.addScore(score);
-            String usedRack = placement.getRack();
-            System.out.println("Rack " + usedRack + ", word " + placement.getWord());
-            this.playerA.removeWord(usedRack);
-            while(!this.playerA.isRackFull()) {
-                 this.playerA.addLetter(this.bag.drawLetter());
+        if(placement == null) {
+            String rack_change = Intelligence.rackExchange(this.bag, rack);
+            if (this.turn) {
+                for (char letter : rack_change.toCharArray()) {
+                    this.playerA.removeLetter(letter);
+                    letter = this.bag.exchangeLetter(letter);
+                    this.playerA.addLetter(letter);
+                }
+            } else {
+                for (char letter : rack_change.toCharArray()) {
+                    this.playerB.removeLetter(letter);
+                    letter = this.bag.exchangeLetter(letter);
+                    this.playerB.addLetter(letter);
+                }
             }
         } else {
-            this.playerB.addScore(score);
-            String usedRack = placement.getRack();
-            System.out.println("Rack " + usedRack + ", word " + placement.getWord());
-            this.playerB.removeWord(usedRack);
-            while(!this.playerB.isRackFull()) {
-                 this.playerB.addLetter(this.bag.drawLetter());
+            this.board.addWord(placement);
+            int score = this.board.computeScore(placement);
+            if (this.turn) {
+                this.playerA.addScore(score);
+                String usedRack = placement.getRack();
+                System.out.println("Rack " + usedRack + ", word " + placement.getWord());
+                this.playerA.removeWord(usedRack);
+                while(!this.playerA.isRackFull()) {
+                     this.playerA.addLetter(this.bag.drawLetter());
+                }
+            } else {
+                this.playerB.addScore(score);
+                String usedRack = placement.getRack();
+                System.out.println("Rack " + usedRack + ", word " + placement.getWord());
+                this.playerB.removeWord(usedRack);
+                while(!this.playerB.isRackFull()) {
+                     this.playerB.addLetter(this.bag.drawLetter());
+                }
             }
         }
         changeTurn();
@@ -101,6 +116,7 @@ public class Operator {
 
     public static void main(String[] args) {
         Operator operator = new Operator();
+        System.out.println(operator.bag);
         Placement placement = new Placement("test", 4, 4, true);
         operator.board.addWord(placement);
         System.out.println("Spillet er opprettet");
@@ -108,6 +124,7 @@ public class Operator {
             System.out.println("Inne i while");
             operator.makeMove();
             System.out.println("Har gjort moves");
+            System.out.println("Bagen er " + operator.bag);
         }
         System.out.println("The winner is: " + operator.winnerToString() + " with a total score: " + operator.winner().getScore());
     }

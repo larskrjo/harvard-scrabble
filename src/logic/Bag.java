@@ -78,7 +78,21 @@ public class Bag {
         return this.letters.isEmpty();
     }
 
+    public char exchangeLetter(char letter) {
+        char ret = drawLetter();
+        this.letters.add(letter);
+        return ret;
+    }
+
     public List<Character> getLetters() {
         return letters;
+    }
+
+    public String toString() {
+        String ret = "";
+        for (char letter : letters) {
+            ret += letter;
+        }
+        return ret;
     }
 }
