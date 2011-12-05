@@ -39,8 +39,22 @@ public class Intelligence {
             chars.add(rack.charAt(i));
         }
         for (int i = 0; i < rack.length(); i++) {
-            char removed = chars.remove(i);
+            char removed = chars.remove(0);
+            Board tempboard = new Board();
+            tempboard.addWord(new Placement(Character.toString(removed), 0, 0, Direction.HORIZONTAL));
+            List<String> []tempwords = dict.getWords(chars, board.getGrid(), 0, Direction.HORIZONTAL);
+            if (tempwords[0] != null) {
+               for (int k = 0; k < tempwords[0].size(); k++) {
+                words.add(tempwords[0].get(k));
+               }
+            }
+            chars.add(removed);
         }
+
+        for (int i = 0; i < words.size(); i++) {
+            System.out.println(words.get(i));
+        }
+
         return null;
     }
 
@@ -128,6 +142,8 @@ public class Intelligence {
     public static void main(String[] args){
         Dictionary dict = new Dictionary();
         Board board = new Board();
+        getFirstPlacement(dict, board, "detests");
+        /*
         System.out.println(board);
         board.addWord(new Placement("something", 7, 0, Direction.HORIZONTAL));
         board.addWord(new Placement("test", 7, 4, Direction.VERTICAL));
@@ -139,6 +155,7 @@ public class Intelligence {
         }
         System.out.println("I got this far");
         System.out.println(getPlacement(dict, board, "abcdefg"));
+        */
       }
 
     public static Placement useHeuristics(Board board, String rack, ArrayList<Placement> candidates) {
