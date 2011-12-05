@@ -3,6 +3,8 @@ package logic;
 import dictionary.Dictionary;
 import gui.GUI;
 
+import javax.swing.plaf.metal.MetalBorders;
+
 /**
  * Created by IntelliJ IDEA.
  * User: havard_normann
@@ -45,18 +47,22 @@ public class Operator {
                     this.playerA.removeLetter(letter);
                     letter = this.bag.exchangeLetter(letter);
                     this.playerA.addLetter(letter);
+                    this.playerA.newPass();
                 }
             } else {
                 for (char letter : rack_change.toCharArray()) {
                     this.playerB.removeLetter(letter);
                     letter = this.bag.exchangeLetter(letter);
                     this.playerB.addLetter(letter);
+                    this.playerB.newPass();
                 }
             }
         } else {
-            this.board.addWord(placement);
             int score = this.board.computeScore(placement);
+            this.board.addWord(placement);
+            System.out.println("The score for this word is: " +  score);
             if (this.turn) {
+                this.playerA.clearPass();
                 this.playerA.addScore(score);
                 String usedRack = placement.getRack();
                 System.out.println("Rack " + usedRack + ", word " + placement.getWord());
@@ -65,6 +71,7 @@ public class Operator {
                      this.playerA.addLetter(this.bag.drawLetter());
                 }
             } else {
+                this.playerB.clearPass();
                 this.playerB.addScore(score);
                 String usedRack = placement.getRack();
                 System.out.println("Rack " + usedRack + ", word " + placement.getWord());
@@ -79,7 +86,7 @@ public class Operator {
     }
 
     public boolean endGame() {
-        return this.bag.isEmpty();
+        return this.bag.isEmpty() || this.playerA.passLimit() || this.playerB.passLimit();
     }
 
     public boolean isTurn() {

@@ -13,6 +13,7 @@ import java.util.List;
 public class Player {
     public List<Character> letters;
     public int score;
+    public int passCount;
 
     public Player(char[] letters) {
         this.letters = new ArrayList<Character>();
@@ -20,6 +21,7 @@ public class Player {
             this.letters.add(letter);
         }
         this.score = 0;
+        this.passCount = 0;
     }
 
     public String getLetters() {
@@ -60,5 +62,17 @@ public class Player {
 
     public void addScore(int value) {
         this.score += value;
+    }
+
+    public void newPass() {
+        this.passCount += 1;
+    }
+
+    public void clearPass() {
+        this.passCount = 0;
+    }
+
+    public boolean passLimit() {
+        return this.passCount >= 3;
     }
 }
