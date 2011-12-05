@@ -21,7 +21,7 @@ public class Operator {
     public Bag bag;
     public GUI gui;
     //playerA's turn implies turn = true
-    public boolean turn;
+    public Turn turn;
 
     public Operator() {
         this.board = new Board();
@@ -34,7 +34,7 @@ public class Operator {
 
     public void makeMove() {
         String rack;
-        if (this.turn) {
+        if (turn == Turn.PLAYER_A) {
             rack = this.playerA.getLetters().toString();
         } else {
             rack = this.playerB.getLetters().toString();
@@ -43,7 +43,7 @@ public class Operator {
         Placement placement = Intelligence.getPlacement(this.dictionary, this.board, rack);
         if(placement == null) {
             String rack_change = Intelligence.rackExchange(this.bag, rack);
-            if (this.turn) {
+            if (turn == Turn.PLAYER_A) {
                 for (char letter : rack_change.toCharArray()) {
                     this.playerA.removeLetter(letter);
                     letter = this.bag.exchangeLetter(letter);
@@ -62,7 +62,7 @@ public class Operator {
             int score = this.board.computeScore(placement);
             this.board.addWord(placement);
             //System.out.println("The score for this word is: " +  score);
-            if (this.turn) {
+            if (turn == Turn.PLAYER_A) {
                 this.playerA.clearPass();
                 this.playerA.addScore(score);
                 String usedRack = placement.getRack();
@@ -111,17 +111,24 @@ public class Operator {
     }
 
     public void changeTurn() {
-        this.turn = !this.turn;
+	    if(turn == Turn.PLAYER_A){
+			turn = Turn.PLAYER_B;
+	    }
+	    else {
+		    turn = Turn.PLAYER_A;
+	    }
     }
 
     public static void main(String[] args) {
         Operator operator = new Operator();
-        System.out.println(operator.bag);
+        System.out.println("Original bag:\n" + operator.bag);
+	    System.out.println("Bag length:\n" + operator.bag.letters.size());
         Placement placement = new Placement("test", 4, 4, Direction.HORIZONTAL);
         operator.board.addWord(placement);
         //while(!operator.endGame()) {
             operator.makeMove();
-            System.out.println("Bagen er " + operator.bag);
+            System.out.println("New bag:\n" + operator.bag);
+	        System.out.println("Bag length:\n" + operator.bag.letters.size());
         //}
         //System.out.println("The winner is: " + operator.winnerToString() + " with a total score: " + operator.winner
 		//	    ().getScore());

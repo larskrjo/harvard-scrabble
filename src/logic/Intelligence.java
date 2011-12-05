@@ -66,7 +66,7 @@ public class Intelligence {
             List<String> []candList = dict.getWords(charList, board.getGrid(), rw, Direction.HORIZONTAL);
             for (int i = 0; i < candList.length; i++) {
                 if (candList[i] != null && candList[i].size() > 0) {
-                    System.out.println(candList[i].size());
+                    //System.out.println(candList[i].size());
                     for (int k = 0; k < candList[i].size(); k++) {
                         String word = candList[i].get(k);
                         int index = i;
