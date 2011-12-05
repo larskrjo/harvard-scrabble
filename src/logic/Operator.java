@@ -47,15 +47,15 @@ public class Operator {
                     this.playerA.removeLetter(letter);
                     letter = this.bag.exchangeLetter(letter);
                     this.playerA.addLetter(letter);
-                    this.playerA.newPass();
                 }
+                this.playerA.newPass();
             } else {
                 for (char letter : rack_change.toCharArray()) {
                     this.playerB.removeLetter(letter);
                     letter = this.bag.exchangeLetter(letter);
                     this.playerB.addLetter(letter);
-                    this.playerB.newPass();
                 }
+                this.playerB.newPass();
             }
         } else {
             int score = this.board.computeScore(placement);

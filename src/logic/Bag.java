@@ -79,6 +79,9 @@ public class Bag {
     }
 
     public char exchangeLetter(char letter) {
+        if (isEmpty()) {
+            return letter;
+        }
         char ret = drawLetter();
         this.letters.add(letter);
         return ret;
