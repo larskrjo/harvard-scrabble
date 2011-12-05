@@ -33,7 +33,14 @@ public class Intelligence {
     public static final boolean duplicateProbability = true;
 
     public static Placement getFirstPlacement(Dictionary dict, Board board, String rack) {
-
+        List<String> words = new ArrayList<String>();
+        List<Character> chars = new ArrayList<Character>();
+        for (int i = 0; i < rack.length(); i++) {
+            chars.add(rack.charAt(i));
+        }
+        for (int i = 0; i < rack.length(); i++) {
+            char removed = chars.remove(i);
+        }
         return null;
     }
 
@@ -95,7 +102,7 @@ public class Intelligence {
                 }
             }
             //List<String> []candList = dict.getWords(charList, board, cl, false);
-            List<String> []candList = dict.getWords(charList, board.getGrid(), cl, Direction.HORIZONTAL);
+            List<String> []candList = dict.getWords(charList, board.getGrid(), cl, Direction.VERTICAL);
             for (int i = 0; i < candList.length; i++) {
                 if (candList[i] != null && candList[i].size() > 0) {
                     for (int k = 0; k < candList[i].size(); k++) {
