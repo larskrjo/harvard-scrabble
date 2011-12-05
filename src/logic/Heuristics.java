@@ -1,5 +1,6 @@
 package logic;
 
+import dictionary.Dictionary;
 import dictionary.Direction;
 
 import java.util.ArrayList;
@@ -16,28 +17,132 @@ import java.util.List;
 public class Heuristics {
 
     public static String rackExchange(Board board, String rack) {
+        // Precompute Hashmap containing heuristic values for characters
+        HashMap<Character, Tuple> letterMap = new HashMap<Character, Tuple>();
+        letterMap.put('a', new Tuple(0.5, -8.0));
+        letterMap.put('b', new Tuple(-3.5, -8.0));
+        letterMap.put('c', new Tuple(-0.5, -7.0));
+        letterMap.put('d', new Tuple(-1.0, -6.0));
+        letterMap.put('e', new Tuple(4.0, -3.5));
+        letterMap.put('f', new Tuple(-3.0, -6.0));
+        letterMap.put('g', new Tuple(-3.5, -10.0));
+        letterMap.put('h', new Tuple(0.5, -6.0));
+        letterMap.put('i', new Tuple(-1.5, -10.0));
+        letterMap.put('j', new Tuple(-2.5, -2.5));
+        letterMap.put('k', new Tuple(-1.5, -1.5));
+        letterMap.put('l', new Tuple(-1.5, -6.0));
+        letterMap.put('m', new Tuple(-0.5, -6.0));
+        letterMap.put('n', new Tuple(0.0, -5.5));
+        letterMap.put('o', new Tuple(-2.5, -8.0));
+        letterMap.put('p', new Tuple(-1.5, -6.0));
+        letterMap.put('q', new Tuple(-11.5, -11.5));
+        letterMap.put('r', new Tuple(1.0, -9.0));
+        letterMap.put('s', new Tuple(7.5, 1.0));
+        letterMap.put('t', new Tuple(-1.0, -6.0));
+        letterMap.put('u', new Tuple(-4.5, -12.0));
+        letterMap.put('v', new Tuple(-6.5, -8.0));
+        letterMap.put('w', new Tuple(-4.0, -8.0));
+        letterMap.put('x', new Tuple(3.5, 3.5));
+        letterMap.put('y', new Tuple(-2.5, -10.0));
+        letterMap.put('z', new Tuple(3.0, 3.0));
+
         List<Character> leftInBag = Bag.getCharactersInGame();
         List<Character> lettersOnBoard = board.getAllCharactersOnBoard();
         for (int i = 0; i < lettersOnBoard.size(); i++) {
             leftInBag.remove(lettersOnBoard.get(i));
         }
-
-        List<Character> bag = Bag.getCharactersInGame();
-        int vowels = 0;
-        int cons = 0;
         String stringVowels = "";
         String stringCons = "";
-        for (int i = 0; i < bag.size(); i++) {
-            if (Score.isVowel(bag.get(i))) {
-                stringVowels += bag.get(i);
+        int vowels = 0;
+        int cons = 0;
+        for (int i = 0; i < leftInBag.size(); i++) {
+            if (Score.isVowel(leftInBag.get(i))) {
+                stringVowels += leftInBag.get(i);
                 vowels++;
             } else {
-                stringCons += bag.get(i);
+                stringCons += leftInBag.get(i);
                 cons++;
             }
         }
-        System.out.println("# of vowels: " + vowels + ": " + stringVowels);
-        System.out.println("# of cons: " + cons + ": " + stringCons);
+        // Letters that will definitely be kept: A,E,H,N,R,S,X,Z and duplicate of S and E
+        String keep = "";
+        String left = "";
+        String thrw = "";
+        for (int i = 0; i < rack.length(); i++) {
+            if (rack.charAt(i) == 'a' || rack.charAt(i) == 'e' || rack.charAt(i) == 'h' || rack.charAt(i) == 'n' ||
+                    rack.charAt(i) == 'r' || rack.charAt(i) == 's' || rack.charAt(i) == 'x' || rack.charAt(i) == 'z'
+                    && ! keep.contains(Character.toString(rack.charAt(i))) || rack.charAt(i) == 's' || rack.charAt(i) == 'e') {
+                keep += rack.charAt(i);
+            } else {
+                left += rack.charAt(i);
+            }
+        }
+
+        // Keep combination Q,U
+        if (left.contains("q") && left.contains("u")) {
+            keep += "qu";
+            left = removeCharAt(left, 'q');
+            left = removeCharAt(left, 'u');
+        }
+        // Keep combination G,I,N
+        if (left.contains("g") && left.contains("i") && keep.contains("n")) {
+            keep += "gi";
+            left = removeChar(left, 'g');
+            left = removeChar(left, 'i');
+        }
+        // Keep combination O,T,E
+        if (left.contains("o") && left.contains("t") && keep.contains("e")) {
+            keep += "ot";
+            left = removeChar(left, 'o');
+            left = removeChar(left, 't');
+        }
+        // Keep combination I,V,E
+        if (left.contains("i") && left.contains("v") && keep.contains("e")) {
+            keep += "iv";
+            left = removeChar(left, 'i');
+            left = removeChar(left, 'v');
+        }
+        // Definitely throw out q and v
+        for (int i = 0; i < left.length(); i++) {
+            if (left.charAt(i) == 'u' || left.charAt(i) == 'v') {
+                thrw += left.charAt(i);
+                left = removeCharAt(left, i);
+            }
+        }
+        // Definitely throw out duplicates
+        for (int i = 0; i < left.length(); i++) {
+            String c = Character.toString(left.charAt(i));
+            if (keep.contains(c) || removeCharAt(left, i).contains(c)) {
+                thrw += c;
+                left = removeCharAt(left, i);
+            }
+        }
+        // Compute score of letters in left
+        List<LetterScore> letterScore = new ArrayList<LetterScore>();
+        for (int i = 0; i < left.length(); i++) {
+            char c = left.charAt(i);
+            letterScore.add(new LetterScore(c, letterMap.get(c).getFirst()));
+        }
+        java.util.Collections.sort(letterScore);
+
+        // Compute average score and vow/con ration in bag
+        int bagScore = 0;
+        int bagVowCount = 0;
+        int bagConCount = 0;
+        for (int i = 0; i < leftInBag.size(); i++) {
+            bagScore += letterMap.get(leftInBag.get(i)).getFirst();
+            if (Score.isVowel(leftInBag.get(i))) {
+                bagVowCount++;
+            } else {
+                bagConCount++;
+            }
+        }
+        int bagAvgScore = bagScore / leftInBag.size();
+
+        // Compute balance in keep and left
+
+
+        // Drop letters as to maintain / achieve balance between vocs and cons - with slight bias towards cons
 
         return null;
     }
@@ -183,10 +288,25 @@ public class Heuristics {
         String rack = "quoteor";
         Board board = new Board();
         Placement placement = new Placement("rut", "r", 0, 0, Direction.HORIZONTAL);
-        System.out.print(rackEval(board, rack, placement));
+        System.out.println(rackEval(board, rack, placement));
 
         rackExchange(board, "abcdefg");
 
+        System.out.println(removeCharAt("01234567", 7));
+
+    }
+
+    public static String removeChar(String string, char c) {
+        for (int i = 0; i < string.length(); i++) {
+            if (string.charAt(i) == c) {
+                return removeCharAt(string, i);
+            }
+        }
+        return null;
+    }
+
+    public static String removeCharAt(String string, int index) {
+        return string.substring(0,index) + string.substring(index+1,string.length());
     }
 
 }
