@@ -78,7 +78,7 @@ public class Intelligence {
                             }
                             counter++;
                         }
-                        candidates.add(new Placement(word, rack, rw, index,  Direction.HORIZONTAL));
+                        candidates.add(new Placement(word, rack, rw, index,  true));
                     }
                 }
             }
@@ -109,7 +109,7 @@ public class Intelligence {
                             }
                             counter++;
                         }
-                    candidates.add(new Placement(word, rack, cl, index,  Direction.VERTICAL));
+                    candidates.add(new Placement(word, rack, cl, index,  false));
                     }
 
                 }
@@ -122,8 +122,8 @@ public class Intelligence {
         Dictionary dict = new Dictionary();
         Board board = new Board();
         System.out.println(board);
-        board.addWord(new Placement("something", 7, 0, Direction.HORIZONTAL));
-        board.addWord(new Placement("test", 7, 4, Direction.VERTICAL));
+        board.addWord(new Placement("something", 7, 0, true));
+        board.addWord(new Placement("test", 7, 4, false));
         System.out.println(board);
         ArrayList<Placement> placements = getCandidates(dict, board, "abcdefg");
         System.out.println(placements.size());
