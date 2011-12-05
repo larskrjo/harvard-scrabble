@@ -20,7 +20,6 @@ public class Operator {
     public Player playerB;
     public Bag bag;
     public GUI gui;
-    //playerA's turn implies turn = true
     public Turn turn;
 
     public Operator() {
@@ -30,6 +29,7 @@ public class Operator {
         this.playerA = new Player(this.bag.drawPlayerStacks());
         this.playerB = new Player(this.bag.drawPlayerStacks());
         this.gui = new GUI(this);
+        this.turn = Turn.PLAYER_A;
     }
 
     public void makeMove() {
@@ -98,6 +98,14 @@ public class Operator {
             return this.playerB;
         } else {
             return null;
+        }
+    }
+
+    public void setTurn(char a) {
+        if (a == 'A') {
+            this.turn = Turn.PLAYER_A;
+        } else {
+            this.turn = Turn.PLAYER_B;
         }
     }
 
