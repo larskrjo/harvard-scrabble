@@ -17,7 +17,7 @@ import java.util.*;
 
 public class Dictionary {
     private String[] words;
-    private File file = new File("src/dictionary/scrabblewords.txt");
+    private File file = new File("dictionary/words.txt");
     private Node DAWG;
 
     public Dictionary() {

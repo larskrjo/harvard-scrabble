@@ -230,8 +230,4 @@ public class Board{
     public Field[][] getGrid() {
         return this.grid;
     }
-
-    public static void main(String[] args) {
-
-    }
 }
