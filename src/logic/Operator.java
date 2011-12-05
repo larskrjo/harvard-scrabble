@@ -60,6 +60,7 @@ public class Operator {
             }
         } else {
             int score = this.board.computeScore(placement);
+	        System.out.println(placement.getDirection());
             this.board.addWord(placement);
             //System.out.println("The score for this word is: " +  score);
             if (turn == Turn.PLAYER_A) {
