@@ -173,8 +173,8 @@ public class Operator {
         //int A = 0;
         //int B = 0;
         //for (int i = 0; i < 20; i++) {
-            Operator operator = new Operator();
-		    operator.newGame();
+        Operator operator = new Operator();
+		operator.newGame();
           //  if (operator.winner() == operator.playerA) {
             //    A += 1;
          //   } else if (operator.winner() == operator.playerB) {
