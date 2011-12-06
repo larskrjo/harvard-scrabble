@@ -29,24 +29,24 @@ public class GUI extends JFrame{
 
 		GridBagConstraints c = new GridBagConstraints();
 		c.fill = GridBagConstraints.BOTH;
-		c.ipadx = 10;
+		c.ipadx = 15;
 		c.ipady = 40;
 
 		c.gridwidth = 6;
 		c.gridx = 2;
 		c.gridy = 0;
-		player1 = new JLabel("logic.Player 1");
+		player1 = new JLabel("Player 1");
 		player1.setBackground(Color.GREEN);
 		player1.setOpaque(true);
 		add(player1, c);
 		c.gridx = 9;
-		player2 = new JLabel("logic.Player 2");
+		player2 = new JLabel("Player 2");
 		player2.setBackground(Color.RED);
 		player2.setOpaque(true);
 		add(player2, c);
 
 		c.gridwidth = 1;
-		c.ipady = 10;
+		c.ipady = 15;
 
 		labels = new JLabel[15][15];
 		for(int i = 0; i < 15; i++){
@@ -70,7 +70,7 @@ public class GUI extends JFrame{
 				add(labels[i][j], c);
 			}
 		}
-		setSize(600,500);
+		setSize(600,600);
 		setDefaultLookAndFeelDecorated(true);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setName("Scrabble");
@@ -83,6 +83,8 @@ public class GUI extends JFrame{
 				labels[i][j].setText("" + operator.board.getField(i,j).getLetter());
 			}
 		}
+	    player1.setText("Player 1, Score: " + operator.playerA.getScore());
+	    player2.setText("Player 2, Score: " + operator.playerB.getScore());
 	    if(operator.turn == Turn.PLAYER_A){
 		    player1.setBackground(Color.GREEN);
 		    player2.setBackground(Color.RED);
