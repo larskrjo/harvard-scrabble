@@ -15,7 +15,7 @@ public class Bag {
 
     public Bag() {
         this.letters = new ArrayList<Character>();
-        for (int i = 0; i < 30; i++) {
+        for (int i = 0; i < 12; i++) {
             this.letters.add('e');
             if (i > 2) {
                 this.letters.add('i');
