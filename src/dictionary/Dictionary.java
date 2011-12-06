@@ -186,7 +186,7 @@ public class Dictionary {
 			beginIndex = Math.max(y-1, 0);
 			endIndex = Math.min(y+1, 14);
 			for(int i = beginIndex; i >= 0; i--){
-				if(beginIndex == 0){
+				if(y == 0){
 					break;
 				}
 				if(field[i][x].getLetter() == ' '){
@@ -198,7 +198,7 @@ public class Dictionary {
 				}
 			}
 			for(int i = endIndex; i <= 14; i++){
-				if(endIndex == 14){
+				if(y == 14){
 					break;
 				}
 				if(field[i][x].getLetter() == ' '){
@@ -223,7 +223,7 @@ public class Dictionary {
 			beginIndex = Math.max(x-1, 0);
 			endIndex = Math.min(x+1, 14);
 			for(int i = beginIndex; i >= 0; i--){
-				if(beginIndex == 0){
+				if(x == 0){
 					break;
 				}
 				if(field[y][i].getLetter() == ' '){
@@ -235,7 +235,7 @@ public class Dictionary {
 				}
 			}
 			for(int i = endIndex; i <= 14; i++){
-				if(endIndex == 14){
+				if(x == 14){
 					break;
 				}
 				if(field[y][i].getLetter() == ' '){
