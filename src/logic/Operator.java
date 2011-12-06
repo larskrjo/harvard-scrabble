@@ -27,7 +27,7 @@ public class Operator {
         this.bag = new Bag();
         this.playerA = new Player(this.bag.drawPlayerStacks());
         this.playerB = new Player(this.bag.drawPlayerStacks());
-        //this.gui = new GUI(this);
+        this.gui = new GUI(this);
 	    this.turn = Turn.PLAYER_A;
     }
 
@@ -93,7 +93,7 @@ public class Operator {
         }
         System.out.println("Heuristic: " + Intelligence.placementFutureValue(this.dictionary, this.board, placement));
         changeTurn();
-        //this.gui.update();
+        this.gui.update();
 	    return new_word;
 
     }
@@ -129,7 +129,7 @@ public class Operator {
 	    else {
 		    turn = Turn.PLAYER_A;
 	    }
-	    //gui.update();
+	    gui.update();
     }
 
     public static void main(String[] args){

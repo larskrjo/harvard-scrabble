@@ -22,46 +22,98 @@ public class GUI extends JFrame{
 	private JLabel[][] labels;
 	private JLabel player1;
 	private JLabel player2;
+	private JLabel title;
+	private JLabel winnerLabel;
+
+	Container con = null;
+    JPanel panelBgImg;
+	JPanel panelContent;
 
 	public GUI(Operator operator){
+
+        con = getContentPane();
+
+        con.setLayout(null);
+        ImageIcon imh = new ImageIcon("images/background.jpg");
+        setSize(imh.getIconWidth(), imh.getIconHeight());
+
+        panelBgImg = new JPanel()
+        {
+            public void paintComponent(Graphics g)
+            {
+                Image img = new ImageIcon("images/background.jpg").getImage();
+                Dimension size = new Dimension(img.getWidth(null), img.getHeight(null));
+                setPreferredSize(size);
+                setMinimumSize(size);
+                setMaximumSize(size);
+                setSize(size);
+                setLayout(null);
+                g.drawImage(img, 0, 0, null);
+            }
+        };
+
+        con.add(panelBgImg);
+        panelBgImg.setBounds(0, 0, imh.getIconWidth(), imh.getIconHeight());
+
+		panelContent = new JPanel();
+		panelContent.setOpaque(false);
 		JPanel dummyPanel = new JPanel();
-		dummyPanel.add(new JLabel("                                                                      "));
+		dummyPanel.add(new JLabel("                                                                                  " +
+				"     "));
+		JPanel winnerPanel = new JPanel();
+		winnerPanel.setOpaque(false);
+		winnerLabel = new JLabel("              ", JLabel.CENTER);
+		winnerLabel.setForeground(Color.GREEN);
+		Font font2 = new Font("Comic Sans MS", Font.BOLD, 14);
+		winnerLabel.setFont(font2);
+
+		dummyPanel.setOpaque(false);
+		title = new JLabel("Askeladden", JLabel.CENTER);
+		Font font = new Font("Serif", Font.BOLD, 40);
+		title.setFont(font);
+		title.setForeground(new Color(0.4f,0.4f,1f));
 
 		this.operator = operator;
 		this.board = operator.board;
-		getContentPane().setLayout(new GridBagLayout());
-		getContentPane().setMinimumSize(new Dimension(600,600));
-
+		panelContent.setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
 		c.fill = GridBagConstraints.BOTH;
 		c.ipadx = 15;
 		c.ipady = 15;
 
-		c.gridwidth = 6;
-		c.gridheight = 1;
-		c.gridx = 2;
-		c.gridy = 0;
-		player1 = new JLabel();
+		c.gridwidth = 15;
+		panelContent.add(title, c);
+		c.gridwidth = 2;
+		c.gridx = 0;
+		c.gridy = 1;
+
+		c.fill = GridBagConstraints.VERTICAL;
+		player1 = new JLabel("Knut: 000", JLabel.CENTER);
 		player1.setBackground(Color.GREEN);
 		player1.setOpaque(true);
-		add(player1, c);
-		c.gridx = 9;
-		player2 = new JLabel();
+		panelContent.add(player1, c);
+		c.gridx = 7;
+		c.weightx = 6;
+		winnerPanel.add(winnerLabel);
+		panelContent.add(winnerPanel, c);
+		c.weightx = 1;
+		c.gridx = 13;
+		player2 = new JLabel("Ola: 000", JLabel.CENTER);
 		player2.setBackground(Color.RED);
 		player2.setOpaque(true);
-		add(player2, c);
-		player1.setText("Player 1, Score: 000");
-	    player2.setText("Player 2, Score: 000");
+		panelContent.add(player2, c);
 
-		c.gridx = 0;
+		c.fill = GridBagConstraints.BOTH;
 		c.gridwidth = 15;
-		c.gridy = 1;
-		add(dummyPanel, c);
-
+		c.gridx = 0;
 		c.gridy = 2;
+		panelContent.add(dummyPanel, c);
+
+		c.gridy = 3;
 		c.gridheight = 15;
 
 		JPanel gamelPanel = new JPanel();
+		gamelPanel.setOpaque(false);
 		GridLayout gridLayout = new GridLayout(15,15);
 		gamelPanel.setLayout(gridLayout);
 
@@ -88,10 +140,14 @@ public class GUI extends JFrame{
 				gamelPanel.add(labels[i][j]);
 			}
 		}
+		panelContent.add(gamelPanel, c);
 
-		add(gamelPanel, c);
-		setSize(600,600);
-		setDefaultLookAndFeelDecorated(true);
+		panelBgImg.add(panelContent);
+
+        panelBgImg.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 50));
+
+        setResizable(false);
+		setLocationRelativeTo(null);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setName("Scrabble");
 		setVisible(true);
@@ -103,8 +159,8 @@ public class GUI extends JFrame{
 				labels[i][j].setText("" + operator.board.getField(i,j).getLetter());
 			}
 		}
-	    player1.setText("Player 1, Score: " + expandNumber(operator.playerA.getScore()));
-	    player2.setText("Player 2, Score: " + expandNumber(operator.playerB.getScore()));
+	    player1.setText("Knut: " + expandNumber(operator.playerA.getScore()));
+	    player2.setText("Ola: " + expandNumber(operator.playerB.getScore()));
 	    if(operator.turn == Turn.PLAYER_A){
 		    player1.setBackground(Color.GREEN);
 		    player2.setBackground(Color.RED);
@@ -114,6 +170,26 @@ public class GUI extends JFrame{
 		    player1.setBackground(Color.RED);
 	    }
     }
+
+	public void finished(){
+		if(operator.playerA.getScore() > operator.playerB.getScore()){
+		    winnerLabel.setText("<--- Knut Wins!");
+			player1.setBackground(Color.GREEN);
+		    player2.setBackground(Color.RED);
+		}
+		else if(operator.playerA.getScore() < operator.playerB.getScore()){
+			winnerLabel.setText("Ola Wins! --->");
+			player2.setBackground(Color.GREEN);
+		    player1.setBackground(Color.RED);
+		}
+		else{
+			winnerLabel.setText("Draw!");
+			player2.setBackground(Color.ORANGE);
+		    player1.setBackground(Color.ORANGE);
+		}
+		player2.validate();
+		player1.validate();
+	}
 
 	private String expandNumber(int score){
 		String number = "";
@@ -131,6 +207,5 @@ public class GUI extends JFrame{
 
 	public static void main(String[] args) {
         new GUI(new Operator());
-
     }
 }
