@@ -21,6 +21,10 @@ public class RackCandidate implements Comparable<RackCandidate>{
         this.rack = rack;
     }
 
+    public String getRack() {
+        return this.rack;
+    }
+
     public void setScore(double score) {
         this.score = score;
     }
