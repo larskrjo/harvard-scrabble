@@ -99,7 +99,9 @@ public class Intelligence {
                             }
                             counter++;
                         }
-                        candidates.add(new Placement(word, theRack, rw, index,  Direction.HORIZONTAL));
+                        if (word.length() != theRack.length()) {
+                            candidates.add(new Placement(word, theRack, rw, index,  Direction.HORIZONTAL));
+                        }
                     }
                 }
             }
@@ -130,7 +132,9 @@ public class Intelligence {
                             }
                             counter++;
                         }
-                        candidates.add(new Placement(word, theRack, index, cl,  Direction.VERTICAL));
+                        if (word.length() != theRack.length()) {
+                            candidates.add(new Placement(word, theRack, index, cl,  Direction.VERTICAL));
+                        }
                     }
 
                 }

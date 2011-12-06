@@ -39,6 +39,8 @@ public class RackCandidate implements Comparable<RackCandidate>{
         }
     }
 
-
+    public String toString() {
+        return this.rack;
+    }
 
 }

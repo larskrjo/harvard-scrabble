@@ -17,17 +17,24 @@ import java.util.List;
 public class Heuristics {
 
     public static String rackExchange(Board board, String rack) {
+
         List<String> bitStrings = new ArrayList<String>();
-        for (int i = 0; i < Math.pow(rack.length(), 2); i++) {
+        for (int i = 0; i < Math.pow(2, rack.length()); i++) {
+            System.out.println(i);
             bitStrings.add(Integer.toBinaryString(i));
         }
-
+        List<RackCandidate> rackCandidates = new ArrayList<RackCandidate>();
         for (String bitString : bitStrings) {
+            String string = "";
             for (int i = 0; i < bitString.length(); i++) {
                 if (bitString.charAt(i) == '1') {
-
+                    string += rack.charAt(i);
                 }
             }
+            rackCandidates.add(new RackCandidate(string));
+        }
+        for (int i = 0; i < rackCandidates.size(); i++) {
+            System.out.println(rackCandidates.get(i));
         }
 
         /*
