@@ -133,9 +133,9 @@ public class Intelligence {
                             }
                             counter++;
                         }
-                        if (word.length() != theRack.length()) {
+                        //if (word.length() != theRack.length()) {
                             candidates.add(new Placement(word, theRack, index, cl,  Direction.VERTICAL));
-                        }
+                        //}
                     }
 
                 }
