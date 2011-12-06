@@ -198,6 +198,9 @@ public class Dictionary {
 				}
 			}
 			for(int i = endIndex; i <= 14; i++){
+				if(endIndex == 14){
+					break;
+				}
 				if(field[i][x].getLetter() == ' '){
 					endIndex = i-1;
 					break;
@@ -232,6 +235,9 @@ public class Dictionary {
 				}
 			}
 			for(int i = endIndex; i <= 14; i++){
+				if(endIndex == 14){
+					break;
+				}
 				if(field[y][i].getLetter() == ' '){
 					endIndex = i-1;
 					break;
