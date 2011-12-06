@@ -144,6 +144,7 @@ public class GUI extends JFrame{
 		for(int i = 0; i < 15; i++){
 			for (int j = 0; j < 15; j++){
 				labels[i][j]= new JLabel(" ", JLabel.CENTER);
+				labels[i][j].setFont(new Font("truetype", Font.BOLD, 16));
 				labels[i][j].setOpaque(true);
 				labels[i][j].setBorder(BorderFactory.createRaisedBevelBorder());
 				labels[i][j].setSize(10,10);
@@ -167,7 +168,7 @@ public class GUI extends JFrame{
 
 		panelBgImg.add(panelContent);
 
-        panelBgImg.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 50));
+        panelBgImg.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
 
         setResizable(false);
 		setLocationRelativeTo(null);
