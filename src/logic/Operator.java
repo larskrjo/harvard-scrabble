@@ -137,7 +137,7 @@ public class Operator {
         this.playerA = new Player(this.bag.drawPlayerStacks());
         this.playerB = new Player(this.bag.drawPlayerStacks());
         this.gui = new GUI(this);
-	    this.turn = Turn.PLAYER_A;
+	    this.turn = Turn.PLAYER_B;
 
 		Placement placement = new Placement("test", 0, 0, Direction.HORIZONTAL);
         board.addWord(placement);
@@ -170,7 +170,17 @@ public class Operator {
 	}
 
     public static void main(String[] args){
-        Operator operator = new Operator();
-		operator.newGame();
+        //int A = 0;
+        //int B = 0;
+        //for (int i = 0; i < 20; i++) {
+            Operator operator = new Operator();
+		    operator.newGame();
+          //  if (operator.winner() == operator.playerA) {
+            //    A += 1;
+         //   } else if (operator.winner() == operator.playerB) {
+               // B += 1;
+           // }
+        //}
+        //System.out.println("Knut vant " + A + " ganger, Ola vant " + B);
     }
 }
