@@ -3,10 +3,7 @@ package logic;
 import dictionary.Dictionary;
 import dictionary.Direction;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -216,11 +213,6 @@ public class Intelligence {
             }
         }
         return theBest;
-    }
-
-    public static String rackExchange(Bag bag, String rack) {
-        // Computes the optimal number of letters in rack for exchange given bag
-        return rack;
     }
 
     public static int placementFutureValue(Dictionary dict, Board board, Placement placement) {
@@ -449,4 +441,92 @@ public class Intelligence {
     public static String removeCharAt(String string, int index) {
         return string.substring(0,index) + string.substring(index+1,string.length());
     }
+
+    /*
+
+    Heuristics for exchanging letters on pass
+
+     */
+
+    public static String rackExchange(Board board, String rack) {
+        HashMap<Character, Tuple> letterMap = new HashMap<Character, Tuple>();
+        letterMap.put('a', new Tuple(0.5, -8.0));
+        letterMap.put('b', new Tuple(-3.5, -8.0));
+        letterMap.put('c', new Tuple(-0.5, -7.0));
+        letterMap.put('d', new Tuple(-1.0, -6.0));
+        letterMap.put('e', new Tuple(4.0, -3.5));
+        letterMap.put('f', new Tuple(-3.0, -6.0));
+        letterMap.put('g', new Tuple(-3.5, -10.0));
+        letterMap.put('h', new Tuple(0.5, -6.0));
+        letterMap.put('i', new Tuple(-1.5, -10.0));
+        letterMap.put('j', new Tuple(-2.5, -2.5));
+        letterMap.put('k', new Tuple(-1.5, -1.5));
+        letterMap.put('l', new Tuple(-1.5, -6.0));
+        letterMap.put('m', new Tuple(-0.5, -6.0));
+        letterMap.put('n', new Tuple(0.0, -5.5));
+        letterMap.put('o', new Tuple(-2.5, -8.0));
+        letterMap.put('p', new Tuple(-1.5, -6.0));
+        letterMap.put('q', new Tuple(-11.5, -11.5));
+        letterMap.put('r', new Tuple(1.0, -9.0));
+        letterMap.put('s', new Tuple(7.5, 1.0));
+        letterMap.put('t', new Tuple(-1.0, -6.0));
+        letterMap.put('u', new Tuple(-4.5, -12.0));
+        letterMap.put('v', new Tuple(-6.5, -8.0));
+        letterMap.put('w', new Tuple(-4.0, -8.0));
+        letterMap.put('x', new Tuple(3.5, 3.5));
+        letterMap.put('y', new Tuple(-2.5, -10.0));
+        letterMap.put('z', new Tuple(3.0, 3.0));
+
+
+        List<String> bitStrings = new ArrayList<String>();
+        for (int i = 0; i < Math.pow(2, rack.length()); i++) {
+            String string = Integer.toBinaryString(i);
+            while (string.length() < 7) {
+                string = '0' + string;
+            }
+            bitStrings.add(string);
+        }
+
+        List<RackCandidate> rackCandidates = new ArrayList<RackCandidate>();
+        for (String bitString : bitStrings) {
+            String string = "";
+            for (int i = 0; i < bitString.length(); i++) {
+                if (bitString.charAt(i) == '1') {
+                    string += rack.charAt(i);
+                }
+            }
+            rackCandidates.add(new RackCandidate(string));
+        }
+        for (int i = 0; i < rackCandidates.size(); i++) {
+            double score = Heuristics.rackScore(rackCandidates.get(i).getRack());
+            rackCandidates.get(i).setScore(score);
+        }
+
+        // Now subtract average rack score
+
+        double totalBagScore = 0;
+        List<Character> leftInBag = Bag.getCharactersLeftInBag(board);
+        for (Character c: leftInBag) {
+            totalBagScore += letterMap.get(c).getFirst();
+        }
+        double averageBagScore = totalBagScore / leftInBag.size();
+
+        for (int i = 0; i < rackCandidates.size(); i++) {
+            double score = rackCandidates.get(i).getScore();
+            score += (7 - rackCandidates.get(i).getRack().length())*averageBagScore;
+            rackCandidates.get(i).setScore(score);
+        }
+
+        Collections.sort(rackCandidates);
+
+        String keep = rackCandidates.get(0).getRack();
+        String thrw = "";
+        for (int i = 0; i < rack.length(); i++) {
+            if (!keep.contains(Character.toString(rack.charAt(i)))) {
+                thrw += rack.charAt(i);
+            }
+        }
+        return thrw;
+    }
+
 }
