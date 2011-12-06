@@ -38,7 +38,7 @@ public class Dictionary {
     }
 
 	private boolean containLockedLetter(Field[] lockedLetters, int position){
-		for(int i = 0; i < position; i++){
+		for(int i = 0; i <= position; i++){
 			if(lockedLetters[i].getLetter() != ' '){
 				return true;
 			}
@@ -102,13 +102,13 @@ public class Dictionary {
 		return currentNode.getType();
 	}
 
-	private List<String> getWords(String subString, List<Character> bag, Field[][] field, int variable_position,
+	private List<String> getWords(String subString, List<Character> bag, Field[][] field, int next_position,
 	                              int fixed_position, int sizeOfBag, Direction direction, char current_letter){
 		Field[] lockedLetters = new Field[15];
 		if(direction == Direction.HORIZONTAL){
 			lockedLetters = field[fixed_position];
-			if(current_letter != ' ' && subString.length() > 0 && !validInOppositeDirection(field, variable_position-1,fixed_position,
-				direction, subString.charAt(subString.length()-1))){
+			if(current_letter != ' ' && subString.length() > 0 && !validInOppositeDirection(field,
+					next_position-1,fixed_position, direction, subString.charAt(subString.length()-1))){
 				return null;
 			}
 		}
@@ -116,40 +116,43 @@ public class Dictionary {
 			for(int i = 0; i < field.length; i++){
 			    lockedLetters[i] = field[i][fixed_position];
 		    }
-			if(current_letter != ' ' && subString.length() > 0 && !validInOppositeDirection(field, fixed_position, variable_position-1,
-				direction, subString.charAt(subString.length()-1))){
+			if(current_letter != ' ' && subString.length() > 0 && !validInOppositeDirection(field, fixed_position,
+					next_position-1, direction, subString.charAt(subString.length()-1))){
 				return null;
 			}
 		}
 
 		List<String> list = new ArrayList<String>();
 		Type type = search(subString);
-		if(type == Type.END_OF_WORD && containLockedLetter(lockedLetters, variable_position) && variable_position == 15 && bag.size() < sizeOfBag){
-			List<String> returnValue = new ArrayList<String>();
-			returnValue.add(subString);
-			return returnValue;
-		}
-		if(variable_position != 15 && type == Type.END_OF_WORD && containLockedLetter(lockedLetters,
-				variable_position) && lockedLetters[variable_position].getLetter() ==
-				' ' && bag.size() < sizeOfBag){
-			list.add(subString);
-		}
-		else if (type == Type.END_OF_STRING){
-			if(containLockedLetter(lockedLetters, variable_position) && (variable_position == 15 || lockedLetters[variable_position].getLetter() ==
-					' ') && bag.size() < sizeOfBag){
+		// If finished search
+		if(next_position == 15){
+			// return if it's a word, contains fixed letters and you have used letters from bag
+			if((type == Type.END_OF_WORD || type == Type.END_OF_STRING) &&
+				containLockedLetter(lockedLetters,next_position-1) && bag.size() < sizeOfBag){
 				List<String> returnValue = new ArrayList<String>();
 				returnValue.add(subString);
 				return returnValue;
 			}
+			// Else return null
 			return null;
 		}
-		else if (bag.size() == 0 || variable_position == 15){
-			return null;
+		// Else if not finished search
+		else if(next_position < 15){
+			// add word if it's a word, contains fixed letters, no fixed letter in next position and you have used
+			// from bag
+			if((type == Type.END_OF_WORD || type == Type.END_OF_STRING) &&
+				containLockedLetter(lockedLetters,next_position-1) && lockedLetters[next_position].getLetter() == ' '
+					&& bag.size() < sizeOfBag){
+				list.add(subString);
+			}
+			// Else search more
 		}
 		List<String> tempList;
-		// Force to search for the predetermined letter
-		if(lockedLetters[variable_position].getLetter() != ' '){
-			tempList = getWords(subString+lockedLetters[variable_position].getLetter(), bag, field, variable_position+1, fixed_position, sizeOfBag,
+		// If next position is locked, force to search for the predetermined letter
+		if(lockedLetters[next_position].getLetter() != ' '){
+			next_position += 1;
+			tempList = getWords(subString+lockedLetters[next_position-1].getLetter(), bag, field, next_position,
+					fixed_position, sizeOfBag,
 					direction, ' ');
 			if(tempList != null){
 				list.addAll(tempList);
@@ -161,18 +164,21 @@ public class Dictionary {
 			for(Character item: bag) tempBag.add(item);
 			for(Character item: bag) tempSet.add(item);
 			Iterator<Character> it = tempSet.iterator();
+			next_position += 1;
 			while(it.hasNext()){
-				// Add a new character to the string and remove it from the bag.
 				Character removed = it.next();
+
+				// Add a new character to the string and remove it from the bag.
 				subString += removed;
 				tempBag.remove(tempBag.indexOf(removed));
-				tempList = getWords(subString, tempBag, field, variable_position+1, fixed_position, sizeOfBag, direction, removed);
+				tempList = getWords(subString, tempBag, field, next_position, fixed_position, sizeOfBag, direction, removed);
+				// Reverse operation
+				tempBag.add(removed);
+				subString = subString.substring(0,subString.length()-1);
+
 				if(tempList != null){
 					list.addAll(tempList);
 				}
-				// Revert, and shift character.
-				subString = subString.substring(0,subString.length()-1);
-				tempBag.add(removed);
 			}
 		}
 		return list;
@@ -299,7 +305,7 @@ public class Dictionary {
 		/*
 		 Search for the relevant indices
 		  */
-		for(int i = min; i < max+1; i++){
+		for(int i = min; i <= max; i++){
 			if(i == min || lockedLetters[i-1].getLetter() == ' '){
 				lists[i] = getWords("", bag, field, i, index, bag.size(), direction, ' ');
 			}
@@ -310,8 +316,7 @@ public class Dictionary {
 	public static void main(String[] args) {
 		Dictionary dict = new Dictionary();
 		Board board = new Board();
-		board.addWord(new Placement("testy", 0,0,Direction.VERTICAL));
-		board.addWord(new Placement("ta", 3,0,Direction.HORIZONTAL));
+		board.addWord(new Placement("etagere", 0,0,Direction.HORIZONTAL));
 		for(int i = 0; i < 8; i++){
 			for (int j = 0; j < 8; j++){
 				System.out.print(board.getGrid()[i][j].getLetter());
@@ -325,15 +330,18 @@ public class Dictionary {
 		rack.add('s');
 		rack.add('k');
 		rack.add('l');
-		List<String>[] list = dict.getWords(rack, board.getGrid(), 1, Direction.VERTICAL);
+		rack.add('h');
+		rack.add('w');
+		rack.add('f');
+		List<String>[] list = dict.getWords(rack, board.getGrid(), 0, Direction.VERTICAL);
 		System.out.println("--------------------VERTICAL-----------------");
-		System.out.println("col: " + 2);
+		System.out.println("col: " + 0);
 		for(int i = 0; i < list.length; i++){
 			System.out.println(list[i]);
 		}
-		List<String>[] list2 = dict.getWords(rack, board.getGrid(), 4, Direction.HORIZONTAL);
+		List<String>[] list2 = dict.getWords(rack, board.getGrid(), 0, Direction.HORIZONTAL);
 		System.out.println("--------------------HORIZONTAL-----------------");
-		System.out.println("row: " + 4);
+		System.out.println("row: " + 0);
 		for(int i = 0; i < list2.length; i++){
 			System.out.println(list2[i]);
 		}
