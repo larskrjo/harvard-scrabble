@@ -136,7 +136,7 @@ public class Operator {
         int average = 0;
         int A = 0;
         int B = 0;
-        for (int j = 0; j < 20; j++) {
+        //for (int j = 0; j < 20; j++) {
         Operator operator = new Operator();
         System.out.println("Original bag:\n" + operator.bag);
 	    System.out.println("Bag length:\n" + operator.bag.letters.size());
@@ -149,6 +149,7 @@ public class Operator {
 
             System.out.println(i++ + ", word for above info: " + operator.makeMove());
         }
+	    operator.gui.finished();
         average += operator.winner().getScore();
         if (operator.winner() == operator.playerA) {
             A += 1;
@@ -158,7 +159,7 @@ public class Operator {
         //System.out.println("The winner is: " + operator.winnerToString() + " with a total score: " + operator.winner
 		//	    ().getScore());
 
-        }
+        //}
         System.out.println("A vant: " + A + ", B vant: " + B + " med average " + (int)average/20);
     }
 }
