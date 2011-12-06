@@ -212,4 +212,62 @@ public class Intelligence {
         // Computes the optimal number of letters in rack for exchange given bag
         return rack;
     }
+
+    public static int placementFutureValue(Dictionary dict, Board board, Placement placement) {
+        int value = 0;
+        double kicker = 0.1;
+        int word_weight = 10;
+        int row = placement.getRow();
+        int col = placement.getCol();
+        String word = placement.getWord();
+        double partValue = 0;
+        for (int i = 0; i < word.length(); i++) {
+            for (int j = 0; j < 15; j++) {
+                if (placement.getDirection() == Direction.HORIZONTAL) {
+                    if (board.getField(j, col + i).getHotspot() != ' ' && board.getField(j,col + i).getLetter() == ' ' && j != row) {
+                        partValue += kicker*Double.parseDouble("" + board.getField(j, col+i).getHotspot())*Score.letterScore(word.charAt(i))/Math.abs(row - j);
+                    }
+                } else {
+                    if (board.getField(row + i, j).getHotspot() != ' ' && board.getField(row + i, j).getLetter() == ' ' && j != col) {
+                        partValue += kicker*Double.parseDouble("" + board.getField(row + i, j).getHotspot())*Score.letterScore(word.charAt(i))/Math.abs(col - j);
+                    }
+                }
+            }
+        }
+        System.out.println(partValue);
+        value -= partValue;
+
+        int count = 0;
+        int hots = 0;
+        if (placement.getDirection() == Direction.HORIZONTAL) {
+            for (int i = row + word.length(); i < 15; i++) {
+                if (board.getField(i, col).getLetter() == ' ') {
+                    count += 1;
+                    if(board.getField(i, col).getHotspot() != ' ') {
+                        hots += Integer.parseInt("" + board.getField(i,col).getHotspot());
+                    }
+                } else {
+                    count = 0;
+                    break;
+                }
+            }
+        } else {
+            for (int i = col + word.length(); i < 15; i++) {
+                if (board.getField(row, i).getLetter() == ' ') {
+                    count += 1;
+                    if(board.getField(row, i).getHotspot() != ' ') {
+                        hots += Integer.parseInt("" + board.getField(row, i).getHotspot());
+                    }
+                } else {
+                    count = 0;
+                    break;
+                }
+            }
+        }
+        if (count > 0) {
+            List<String> potential_words = dict.getExtendedWords(word, count);
+            value -= (potential_words.size()/word_weight + hots);
+        }
+        return value;
+    }
 }
