@@ -103,12 +103,12 @@ public class Dictionary {
 	}
 
 	private List<String> getWords(String subString, List<Character> bag, Field[][] field, int next_position,
-	                              int fixed_position, int sizeOfBag, Direction direction, char current_letter){
+	                              int fixed_position, boolean connected, Direction direction, char current_letter){
 		Field[] lockedLetters = new Field[15];
 		if(direction == Direction.HORIZONTAL){
 			lockedLetters = field[fixed_position];
 			if(current_letter != ' ' && subString.length() > 0 && !validInOppositeDirection(field,
-					next_position-1,fixed_position, direction, subString.charAt(subString.length()-1))){
+					next_position-1,fixed_position, direction, subString.charAt(subString.length()-1), connected)){
 				return null;
 			}
 		}
@@ -117,7 +117,7 @@ public class Dictionary {
 			    lockedLetters[i] = field[i][fixed_position];
 		    }
 			if(current_letter != ' ' && subString.length() > 0 && !validInOppositeDirection(field, fixed_position,
-					next_position-1, direction, subString.charAt(subString.length()-1))){
+					next_position-1, direction, subString.charAt(subString.length()-1), connected)){
 				return null;
 			}
 		}
@@ -128,7 +128,7 @@ public class Dictionary {
 		if(next_position == 15){
 			// return if it's a word, contains fixed letters and you have used letters from bag
 			if((type == Type.END_OF_WORD || type == Type.END_OF_STRING) &&
-				containLockedLetter(lockedLetters,next_position-1) && bag.size() < sizeOfBag){
+				containLockedLetter(lockedLetters,next_position-1) && connected){
 				List<String> returnValue = new ArrayList<String>();
 				returnValue.add(subString);
 				return returnValue;
@@ -142,7 +142,7 @@ public class Dictionary {
 			// from bag
 			if((type == Type.END_OF_WORD || type == Type.END_OF_STRING) &&
 				containLockedLetter(lockedLetters,next_position-1) && lockedLetters[next_position].getLetter() == ' '
-					&& bag.size() < sizeOfBag){
+					&& connected){
 				list.add(subString);
 			}
 			// Else search more
@@ -152,8 +152,7 @@ public class Dictionary {
 		if(lockedLetters[next_position].getLetter() != ' '){
 			next_position += 1;
 			tempList = getWords(subString+lockedLetters[next_position-1].getLetter(), bag, field, next_position,
-					fixed_position, sizeOfBag,
-					direction, ' ');
+					fixed_position, connected, direction, ' ');
 			if(tempList != null){
 				list.addAll(tempList);
 			}
@@ -171,7 +170,8 @@ public class Dictionary {
 				// Add a new character to the string and remove it from the bag.
 				subString += removed;
 				tempBag.remove(tempBag.indexOf(removed));
-				tempList = getWords(subString, tempBag, field, next_position, fixed_position, sizeOfBag, direction, removed);
+				tempList = getWords(subString, tempBag, field, next_position, fixed_position, true, direction,
+						removed);
 				// Reverse operation
 				tempBag.add(removed);
 				subString = subString.substring(0,subString.length()-1);
@@ -184,7 +184,8 @@ public class Dictionary {
 		return list;
 	}
 
-	private boolean validInOppositeDirection(Field[][] field, int x, int y, Direction direction, char current_letter) {
+	private boolean validInOppositeDirection(Field[][] field, int x, int y, Direction direction, char current_letter,
+	 boolean connected) {
 		String string = "";
 		int beginIndex;
 		int endIndex;
@@ -267,6 +268,9 @@ public class Dictionary {
 			if(type == Type.NOT_POSSIBLY_A_WORD || type == Type.NOT_YET_A_WORD){
 				return false;
 			}
+			if(!connected){
+				connected = true;
+			}
 		}
 		return true;
 	}
@@ -274,22 +278,44 @@ public class Dictionary {
 	public List<String>[] getWords(List<Character> bag, Field[][] field, int index, Direction direction){
 	    int min = -1;
 	    int max = -1;
+		Field[] overLetters = new Field[15];
 		Field[] lockedLetters = new Field[15];
+		Field[] underLetters = new Field[15];
 		/*
 		Calculate the correct row or column to inspect
 		 */
 	    if(direction == Direction.HORIZONTAL){
+		    if(index-1 > 0)
+			     underLetters = field[index-1];
+		    if(index+1 < 14)
+			     overLetters = field[index+1];
 			lockedLetters = field[index];
 	    }
 	    else{
 		    for(int i = 0; i < field.length; i++){
-			    lockedLetters[i] = field[i][index];
+			    if(index-1 > 0)
+			        underLetters[i] = field[i][index-1];
+		        if(index+1 < 14)
+			        overLetters[i] = field[i][index+1];
+				lockedLetters[i] = field[i][index];
 		    }
 	    }
 		/*
 		 Make sure we don't search for unnecessary indices
 		  */
 		for(int i = 0; i < field.length; i++){
+			if(underLetters[i] != null && underLetters[i].getLetter() != ' '){
+				if(min == -1){
+					min = i;
+				}
+		        max = i;
+			}
+			if(overLetters[i] != null && overLetters[i].getLetter() != ' '){
+				if(min == -1){
+					min = i;
+				}
+		        max = i;
+			}
 			if(lockedLetters[i].getLetter() != ' '){
 				if(min == -1){
 					min = i;
@@ -307,7 +333,7 @@ public class Dictionary {
 		  */
 		for(int i = min; i <= max; i++){
 			if(i == min || lockedLetters[i-1].getLetter() == ' '){
-				lists[i] = getWords("", bag, field, i, index, bag.size(), direction, ' ');
+				lists[i] = getWords("", bag, field, i, index, false, direction, ' ');
 			}
 		}
 	    return lists;
