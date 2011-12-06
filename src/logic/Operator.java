@@ -63,13 +63,13 @@ public class Operator {
                 this.playerB.newPass();
             }
         } else {
+	        System.out.println("col: " + placement.getCol() + " row: " + placement.getRow() + " direction: " +
+			        placement.getDirection());
             int score = this.board.computeScore(placement);
             if(showHeuristicInfo)
 	            System.out.println("Score: "+ score);
 	        new_word = placement.getWord();
             this.board.addWord(placement);
-	        System.out.println("col: " + placement.getCol() + " row: " + placement.getRow() + " direction: " +
-			        placement.getDirection() + " word: " + placement.getWord() +" with rack: " + rack);
             //System.out.println("The score for this word is: " +  score);
             if (turn == Turn.PLAYER_A) {
                 this.playerA.clearPass();
