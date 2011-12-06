@@ -58,9 +58,9 @@ public class Intelligence {
         return null;
     }
 
-    public static Placement getPlacement(Dictionary dict, Board board, String rack) {
+    public static Placement getPlacement(Dictionary dict, Board board, String rack, boolean future) {
         ArrayList<Placement> candidates = getCandidates(dict, board, rack);
-        return useHeuristics(board, rack, candidates);
+        return useHeuristics(dict, board, rack, candidates, future);
     }
 
     public static ArrayList<Placement> getCandidates(Dictionary dict, Board board, String rack) {
@@ -158,7 +158,7 @@ public class Intelligence {
         */
       }
 
-    public static Placement useHeuristics(Board board, String rack, ArrayList<Placement> candidates) {
+    public static Placement useHeuristics(Dictionary dict, Board board, String rack, ArrayList<Placement> candidates, boolean futureValue) {
         Hashtable<Placement, Integer> candToScore = new Hashtable<Placement, Integer>();
 
         ArrayList<Candidate> candScores = new ArrayList<Candidate>();
@@ -178,7 +178,12 @@ public class Intelligence {
         }
 
         for (Placement candidate : candidates) {
-            int score = board.computeScore(candidate);
+            int score;
+            if (futureValue) {
+                score = board.computeScore(candidate) + placementFutureValue(dict, board, candidate);
+            } else {
+                score = board.computeScore(candidate);
+            }
             candToScore.put(candidate, score);
 
             if (rackEvaluation) {
@@ -214,9 +219,12 @@ public class Intelligence {
     }
 
     public static int placementFutureValue(Dictionary dict, Board board, Placement placement) {
+        if (placement == null) {
+            return 0;
+        }
         int value = 0;
-        double kicker = 0.1;
-        int word_weight = 10;
+        double kicker = 1.1;
+        int word_weight = 7;
         int row = placement.getRow();
         int col = placement.getCol();
         String word = placement.getWord();
@@ -266,7 +274,12 @@ public class Intelligence {
         }
         if (count > 0) {
             List<String> potential_words = dict.getExtendedWords(word, count);
-            value -= (potential_words.size()/word_weight + hots);
+            int count_value = (potential_words.size()/word_weight + hots);
+            if (count_value < 5) {
+                value -= (potential_words.size()/word_weight + hots);
+            } else {
+                value -= 5;
+            }
         }
         return value;
     }
