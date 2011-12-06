@@ -242,4 +242,8 @@ public class Board{
         }
         return chars;
     }
+
+    public boolean isEmpty() {
+        return this.getAllCharactersOnBoard().size() == 0;
+    }
 }
