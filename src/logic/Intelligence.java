@@ -227,21 +227,24 @@ public class Intelligence {
             return 0;
         }
         int value = 0;
-        double kicker = 1.1;
-        int word_weight = 7;
+        int word_weight = 10;
         int row = placement.getRow();
         int col = placement.getCol();
         String word = placement.getWord();
         double partValue = 0;
         for (int i = 0; i < word.length(); i++) {
-            for (int j = 0; j < 15; j++) {
-                if (placement.getDirection() == Direction.HORIZONTAL) {
-                    if (board.getField(j, col + i).getHotspot() != ' ' && board.getField(j,col + i).getLetter() == ' ' && j != row) {
-                        partValue += kicker*Double.parseDouble("" + board.getField(j, col+i).getHotspot())*Score.letterScore(word.charAt(i))/Math.abs(row - j);
+            for (int j = -3; j < 3; j++) {
+                if (placement.getDirection() == Direction.HORIZONTAL && row + j < 15 && row + j >= 0) {
+                    if (board.getField(row + j, col + i).getHotspot() != ' ' && board.getField(row + j,col + i).getLetter() == ' ' && j != 0) {
+                        if (Score.isVowel(word.charAt(i))) {
+                            partValue += 1;
+                        }
                     }
-                } else {
-                    if (board.getField(row + i, j).getHotspot() != ' ' && board.getField(row + i, j).getLetter() == ' ' && j != col) {
-                        partValue += kicker*Double.parseDouble("" + board.getField(row + i, j).getHotspot())*Score.letterScore(word.charAt(i))/Math.abs(col - j);
+                } else if ((placement.getDirection() == Direction.VERTICAL && col + j < 15 && col+j >= 0)) {
+                    if (board.getField(row + i, col + j).getHotspot() != ' ' && board.getField(row + i, col + j).getLetter() == ' ' && j != 0) {
+                        if (Score.isVowel(word.charAt(i))) {
+                            partValue += 1;
+                        }
                     }
                 }
             }
@@ -276,13 +279,13 @@ public class Intelligence {
                 }
             }
         }
-        if (count > 0) {
+        if (count > 0 && value > 0) {
             List<String> potential_words = dict.getExtendedWords(word, count);
             int count_value = (potential_words.size()/word_weight + hots);
-            if (count_value < 5) {
+            if (count_value < 3) {
                 value -= (potential_words.size()/word_weight + hots);
             } else {
-                value -= 5;
+                value -= 3;
             }
         }
         return value;

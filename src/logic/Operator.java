@@ -107,9 +107,9 @@ public class Operator {
 
     public String winnerToString() {
         if (winner() == this.playerA) {
-            return "logic.Player A";
+            return "Player A";
         } else if (winner() == this.playerB) {
-            return "logic.Player B";
+            return "Player B";
         } else {
             return "Draw";
         }
