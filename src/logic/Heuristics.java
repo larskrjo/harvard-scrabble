@@ -4,6 +4,7 @@ import dictionary.Dictionary;
 import dictionary.Direction;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -17,6 +18,34 @@ import java.util.List;
 public class Heuristics {
 
     public static String rackExchange(Board board, String rack) {
+        HashMap<Character, Tuple> letterMap = new HashMap<Character, Tuple>();
+        letterMap.put('a', new Tuple(0.5, -8.0));
+        letterMap.put('b', new Tuple(-3.5, -8.0));
+        letterMap.put('c', new Tuple(-0.5, -7.0));
+        letterMap.put('d', new Tuple(-1.0, -6.0));
+        letterMap.put('e', new Tuple(4.0, -3.5));
+        letterMap.put('f', new Tuple(-3.0, -6.0));
+        letterMap.put('g', new Tuple(-3.5, -10.0));
+        letterMap.put('h', new Tuple(0.5, -6.0));
+        letterMap.put('i', new Tuple(-1.5, -10.0));
+        letterMap.put('j', new Tuple(-2.5, -2.5));
+        letterMap.put('k', new Tuple(-1.5, -1.5));
+        letterMap.put('l', new Tuple(-1.5, -6.0));
+        letterMap.put('m', new Tuple(-0.5, -6.0));
+        letterMap.put('n', new Tuple(0.0, -5.5));
+        letterMap.put('o', new Tuple(-2.5, -8.0));
+        letterMap.put('p', new Tuple(-1.5, -6.0));
+        letterMap.put('q', new Tuple(-11.5, -11.5));
+        letterMap.put('r', new Tuple(1.0, -9.0));
+        letterMap.put('s', new Tuple(7.5, 1.0));
+        letterMap.put('t', new Tuple(-1.0, -6.0));
+        letterMap.put('u', new Tuple(-4.5, -12.0));
+        letterMap.put('v', new Tuple(-6.5, -8.0));
+        letterMap.put('w', new Tuple(-4.0, -8.0));
+        letterMap.put('x', new Tuple(3.5, 3.5));
+        letterMap.put('y', new Tuple(-2.5, -10.0));
+        letterMap.put('z', new Tuple(3.0, 3.0));
+
 
         List<String> bitStrings = new ArrayList<String>();
         for (int i = 0; i < Math.pow(2, rack.length()); i++) {
@@ -42,10 +71,31 @@ public class Heuristics {
             rackCandidates.get(i).setScore(score);
         }
 
-        for (int i = 0; i < rackCandidates.size(); i++) {
-            System.out.println(rackCandidates.get(i).getRack() + ", " + rackCandidates.get(i).getScore());
+        // Now subtract average rack score
+
+        double totalBagScore = 0;
+        List<Character> leftInBag = Bag.getCharactersLeftInBag(board);
+        for (Character c: leftInBag) {
+            totalBagScore += letterMap.get(c).getFirst();
         }
-        return null;
+        double averageBagScore = totalBagScore / leftInBag.size();
+
+        for (int i = 0; i < rackCandidates.size(); i++) {
+            double score = rackCandidates.get(i).getScore();
+            score += (7 - rackCandidates.get(i).getRack().length())*averageBagScore;
+            rackCandidates.get(i).setScore(score);
+        }
+
+        Collections.sort(rackCandidates);
+
+        String keep = rackCandidates.get(0).getRack();
+        String thrw = "";
+        for (int i = 0; i < rack.length(); i++) {
+            if (!keep.contains(Character.toString(rack.charAt(i)))) {
+                thrw += rack.charAt(i);
+            }
+        }
+        return thrw;
     }
 
     public static double rackScore(String rack) {
@@ -90,6 +140,7 @@ public class Heuristics {
         HashMap<Double, Double> fourVowels = new HashMap<Double, Double>();
         HashMap<Double, Double> fiveVowels = new HashMap<Double, Double>();
         HashMap<Double, Double> sixVowels = new HashMap<Double, Double>();
+        HashMap<Double, Double> sevenVowels = new HashMap<Double, Double>();
         balanceMap.put(0.0, zeroVowels);
         balanceMap.put(1.0, oneVowel);
         balanceMap.put(2.0, twoVowels);
@@ -97,6 +148,7 @@ public class Heuristics {
         balanceMap.put(4.0, fourVowels);
         balanceMap.put(5.0, fiveVowels);
         balanceMap.put(6.0, sixVowels);
+        balanceMap.put(7.0, sevenVowels);
 
         balanceMap.get(0.0).put(0.0, 0.0);
         balanceMap.get(1.0).put(0.0, -0.5);
@@ -105,6 +157,7 @@ public class Heuristics {
         balanceMap.get(4.0).put(0.0, -5.0);
         balanceMap.get(5.0).put(0.0, -7.5);
         balanceMap.get(6.0).put(0.0, -12.5);
+        balanceMap.get(7.0).put(0.0, -17.5);
 
         balanceMap.get(0.0).put(1.0, 0.5);
         balanceMap.get(1.0).put(1.0, 1.5);
@@ -112,26 +165,34 @@ public class Heuristics {
         balanceMap.get(3.0).put(1.0, -2.0);
         balanceMap.get(4.0).put(1.0, -4.5);
         balanceMap.get(5.0).put(1.0, -7.0);
+        balanceMap.get(6.0).put(1.0, -9.5);
 
         balanceMap.get(0.0).put(2.0, 1.5);
         balanceMap.get(1.0).put(2.0, 1.0);
         balanceMap.get(2.0).put(2.0, 0.5);
         balanceMap.get(3.0).put(2.0, -0.5);
         balanceMap.get(4.0).put(2.0, -3.0);
+        balanceMap.get(5.0).put(2.0, -5.5);
 
         balanceMap.get(0.0).put(3.0, 0.0);
         balanceMap.get(1.0).put(3.0, 0.5);
         balanceMap.get(2.0).put(3.0, 0.0);
         balanceMap.get(3.0).put(3.0, 1.5);
+        balanceMap.get(4.0).put(3.0, -0.75);
 
         balanceMap.get(0.0).put(4.0, -3.5);
         balanceMap.get(1.0).put(4.0, -2.5);
         balanceMap.get(2.0).put(4.0, -2.0);
+        balanceMap.get(3.0).put(4.0, -0.25);
 
         balanceMap.get(0.0).put(5.0, -6.0);
         balanceMap.get(1.0).put(5.0, -5.5);
+        balanceMap.get(2.0).put(5.0, -3.75);
 
         balanceMap.get(0.0).put(6.0, -9.0);
+        balanceMap.get(1.0).put(6.0, -7.25);
+
+        balanceMap.get(0.0).put(7.0, -12.0);
 
         List<Character> checked = new ArrayList<Character>();
         for (int i = 0; i < rackLeave.size(); i++) {
@@ -149,8 +210,7 @@ public class Heuristics {
             }
             checked.add(rackLeave.get(i));
         }
-        System.out.println(vowelCount);
-        System.out.println(consCount);
+
         heuristic += balanceMap.get(vowelCount).get(consCount);
 
         // Adjust for special cases i.e. combinations QU, GIN, IVE, OTU
@@ -220,6 +280,7 @@ public class Heuristics {
         HashMap<Double, Double> fourVowels = new HashMap<Double, Double>();
         HashMap<Double, Double> fiveVowels = new HashMap<Double, Double>();
         HashMap<Double, Double> sixVowels = new HashMap<Double, Double>();
+        HashMap<Double, Double> sevenVowels = new HashMap<Double, Double>();
         balanceMap.put(0.0, zeroVowels);
         balanceMap.put(1.0, oneVowel);
         balanceMap.put(2.0, twoVowels);
@@ -227,6 +288,7 @@ public class Heuristics {
         balanceMap.put(4.0, fourVowels);
         balanceMap.put(5.0, fiveVowels);
         balanceMap.put(6.0, sixVowels);
+        balanceMap.put(7.0, sevenVowels);
 
         balanceMap.get(0.0).put(0.0, 0.0);
         balanceMap.get(1.0).put(0.0, -0.5);
@@ -235,6 +297,8 @@ public class Heuristics {
         balanceMap.get(4.0).put(0.0, -5.0);
         balanceMap.get(5.0).put(0.0, -7.5);
         balanceMap.get(6.0).put(0.0, -12.5);
+        balanceMap.get(7.0).put(0.0, -17.5);
+        // Continue form here...
 
         balanceMap.get(0.0).put(1.0, 0.5);
         balanceMap.get(1.0).put(1.0, 1.5);
@@ -242,26 +306,34 @@ public class Heuristics {
         balanceMap.get(3.0).put(1.0, -2.0);
         balanceMap.get(4.0).put(1.0, -4.5);
         balanceMap.get(5.0).put(1.0, -7.0);
+        balanceMap.get(6.0).put(1.0, -9.5);
 
         balanceMap.get(0.0).put(2.0, 1.5);
         balanceMap.get(1.0).put(2.0, 1.0);
         balanceMap.get(2.0).put(2.0, 0.5);
         balanceMap.get(3.0).put(2.0, -0.5);
         balanceMap.get(4.0).put(2.0, -3.0);
+        balanceMap.get(5.0).put(2.0, -5.5);
 
         balanceMap.get(0.0).put(3.0, 0.0);
         balanceMap.get(1.0).put(3.0, 0.5);
         balanceMap.get(2.0).put(3.0, 0.0);
         balanceMap.get(3.0).put(3.0, 1.5);
+        balanceMap.get(4.0).put(3.0, -0.75);
 
         balanceMap.get(0.0).put(4.0, -3.5);
         balanceMap.get(1.0).put(4.0, -2.5);
         balanceMap.get(2.0).put(4.0, -2.0);
+        balanceMap.get(3.0).put(4.0, -0.25);
 
         balanceMap.get(0.0).put(5.0, -6.0);
         balanceMap.get(1.0).put(5.0, -5.5);
+        balanceMap.get(2.0).put(5.0, -3.75);
 
         balanceMap.get(0.0).put(6.0, -9.0);
+        balanceMap.get(1.0).put(6.0, -7.25);
+
+        balanceMap.get(0.0).put(7.0, -12.0);
 
         List<Character> checked = new ArrayList<Character>();
         for (int i = 0; i < rackLeave.size(); i++) {
@@ -327,11 +399,8 @@ public class Heuristics {
         String rack = "quoteor";
         Board board = new Board();
         Placement placement = new Placement("rut", "r", 0, 0, Direction.HORIZONTAL);
-        System.out.println(rackEval(board, rack, placement));
 
-        rackExchange(board, "abcdefg");
-        System.out.println(Integer.toBinaryString(127));
-
+        System.out.println(rackExchange(board, "abcdefg"));
 
     }
 }

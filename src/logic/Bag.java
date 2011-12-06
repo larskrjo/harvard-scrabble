@@ -103,4 +103,13 @@ public class Bag {
         return (new Bag()).letters;
     }
 
+    public static List<Character> getCharactersLeftInBag(Board board) {
+        List<Character> onBoard = board.getAllCharactersOnBoard();
+        List<Character> inBag = getCharactersInGame();
+        for (Character c : onBoard) {
+            inBag.remove(c);
+        }
+        return inBag;
+    }
+
 }

@@ -242,5 +242,4 @@ public class Board{
         }
         return chars;
     }
-
 }
