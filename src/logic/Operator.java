@@ -39,7 +39,7 @@ public class Operator {
         } else {
             rack = this.playerB.getLetters().toString();
         }
-        System.out.println("Rack: " + rack);
+        //System.out.println("Rack: " + rack);
         Placement placement = Intelligence.getPlacement(this.dictionary, this.board, rack);
 
         if(placement == null) {
@@ -60,9 +60,8 @@ public class Operator {
                 this.playerB.newPass();
             }
         } else {
-	        System.out.println("col: " + placement.getCol());
-	        System.out.println("row: " + placement.getRow());
-	        System.out.println("direction: " + placement.getDirection());
+	        System.out.println("col: " + placement.getCol() + " row: " + placement.getRow() + " direction: " +
+			        placement.getDirection());
             int score = this.board.computeScore(placement);
 	        new_word = placement.getWord();
             this.board.addWord(placement);
@@ -71,7 +70,7 @@ public class Operator {
                 this.playerA.clearPass();
                 this.playerA.addScore(score);
                 String usedRack = placement.getRack();
-                System.out.println("Rack " + usedRack + ", word " + placement.getWord());
+                //System.out.println("Rack " + usedRack + ", word " + placement.getWord());
                 this.playerA.removeWord(usedRack);
                 while(!this.playerA.isRackFull() && this.bag.letters.size() != 0) {
                      this.playerA.addLetter(this.bag.drawLetter());
@@ -80,7 +79,7 @@ public class Operator {
                 this.playerB.clearPass();
                 this.playerB.addScore(score);
                 String usedRack = placement.getRack();
-                System.out.println("Rack " + usedRack + ", word " + placement.getWord());
+                //System.out.println("Rack " + usedRack + ", word " + placement.getWord());
                 this.playerB.removeWord(usedRack);
                 while(!this.playerB.isRackFull() && this.bag.letters.size() != 0) {
                      this.playerB.addLetter(this.bag.drawLetter());
@@ -131,18 +130,12 @@ public class Operator {
         Operator operator = new Operator();
         System.out.println("Original bag:\n" + operator.bag);
 	    System.out.println("Bag length:\n" + operator.bag.letters.size());
-        Placement placement = new Placement("test", 4, 4, Direction.HORIZONTAL);
+        Placement placement = new Placement("test", 0, 0, Direction.HORIZONTAL);
         operator.board.addWord(placement);
 
-	    String new_word = "";
         while(!operator.endGame()) {
-            new_word = operator.makeMove();
-	        if(operator.dictionary.search(new_word) == Type.NOT_POSSIBLY_A_WORD || operator.dictionary.search(new_word) == Type.NOT_YET_A_WORD){
-		        System.out.println(new_word + " is not a word");
-		        break;
-	        }
-            System.out.println("New bag:\n" + operator.bag);
-	        System.out.println("Bag length:\n" + operator.bag.letters.size());
+	    //for(int i = 0; i < 4; i++){
+            System.out.println("word for above info: " + operator.makeMove());
         }
 
         //System.out.println("The winner is: " + operator.winnerToString() + " with a total score: " + operator.winner

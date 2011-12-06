@@ -174,7 +174,7 @@ public class Intelligence {
         }
 
         for (int i = 0; i < candScores.size(); i++) {
-            System.out.println(candScores.get(i));
+            //System.out.println(candScores.get(i));
         }
 
         for (Placement candidate : candidates) {
