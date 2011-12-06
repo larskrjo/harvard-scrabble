@@ -481,7 +481,7 @@ public class Intelligence {
         List<String> bitStrings = new ArrayList<String>();
         for (int i = 0; i < Math.pow(2, rack.length()); i++) {
             String string = Integer.toBinaryString(i);
-            while (string.length() < 7) {
+            while (string.length() < rack.length()) {
                 string = '0' + string;
             }
             bitStrings.add(string);
