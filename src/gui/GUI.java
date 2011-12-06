@@ -7,6 +7,9 @@ import logic.Turn;
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * Created by IntelliJ IDEA.
@@ -17,13 +20,14 @@ import java.awt.*;
  */
 public class GUI extends JFrame{
 
-	private Operator operator;
+	private final Operator operator;
 	private Board board;
 	private JLabel[][] labels;
 	private JLabel player1;
 	private JLabel player2;
 	private JLabel title;
 	private JLabel winnerLabel;
+	private JButton restart;
 
 	Container con = null;
     JPanel panelBgImg;
@@ -62,6 +66,7 @@ public class GUI extends JFrame{
 				"     "));
 		JPanel winnerPanel = new JPanel();
 		winnerPanel.setOpaque(false);
+		winnerPanel.setLayout(new GridLayout(2,1));
 		winnerLabel = new JLabel("              ", JLabel.CENTER);
 		winnerLabel.setForeground(Color.GREEN);
 		Font font2 = new Font("Comic Sans MS", Font.BOLD, 14);
@@ -81,11 +86,28 @@ public class GUI extends JFrame{
 		c.ipadx = 15;
 		c.ipady = 15;
 
+		c.gridy = 0;
 		c.gridwidth = 15;
 		panelContent.add(title, c);
+
+		restart = new JButton("    Restart    ");
+		restart.setFocusable(false);
+		restart.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent actionEvent) {
+				Thread t = new Thread(new Runnable() {
+					public void run() {
+						try {
+							GUI.this.operator.restartGame();
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+				});
+				t.start();
+			}
+		});
 		c.gridwidth = 2;
-		c.gridx = 0;
-		c.gridy = 1;
+		c.gridy = 2;
 
 		c.fill = GridBagConstraints.VERTICAL;
 		player1 = new JLabel("Knut: 000", JLabel.CENTER);
@@ -95,6 +117,7 @@ public class GUI extends JFrame{
 		c.gridx = 7;
 		c.weightx = 6;
 		winnerPanel.add(winnerLabel);
+		winnerPanel.add(restart);
 		panelContent.add(winnerPanel, c);
 		c.weightx = 1;
 		c.gridx = 13;
@@ -106,10 +129,10 @@ public class GUI extends JFrame{
 		c.fill = GridBagConstraints.BOTH;
 		c.gridwidth = 15;
 		c.gridx = 0;
-		c.gridy = 2;
+		c.gridy = 3;
 		panelContent.add(dummyPanel, c);
 
-		c.gridy = 3;
+		c.gridy = 4;
 		c.gridheight = 15;
 
 		JPanel gamelPanel = new JPanel();
@@ -169,6 +192,8 @@ public class GUI extends JFrame{
 		    player2.setBackground(Color.GREEN);
 		    player1.setBackground(Color.RED);
 	    }
+	    winnerLabel.setText("              ");
+	    restart.setEnabled(false);
     }
 
 	public void finished(){
@@ -189,6 +214,7 @@ public class GUI extends JFrame{
 		}
 		player2.validate();
 		player1.validate();
+		restart.setEnabled(true);
 	}
 
 	private String expandNumber(int score){

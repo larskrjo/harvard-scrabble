@@ -5,6 +5,9 @@ import dictionary.Direction;
 import dictionary.Type;
 import gui.GUI;
 
+import javax.swing.*;
+import java.lang.reflect.InvocationTargetException;
+
 /**
  * Created by IntelliJ IDEA.
  * User: havard_normann
@@ -20,16 +23,6 @@ public class Operator {
     public Bag bag;
     public GUI gui;
     public Turn turn;
-
-    public Operator() {
-        this.board = new Board();
-        this.dictionary = new Dictionary();
-        this.bag = new Bag();
-        this.playerA = new Player(this.bag.drawPlayerStacks());
-        this.playerB = new Player(this.bag.drawPlayerStacks());
-        this.gui = new GUI(this);
-	    this.turn = Turn.PLAYER_A;
-    }
 
     public String makeMove() {
 	    String new_word = "--";
@@ -132,34 +125,48 @@ public class Operator {
 	    gui.update();
     }
 
+	public void newGame(){
+
+		this.board = new Board();
+        this.dictionary = new Dictionary();
+        this.bag = new Bag();
+        this.playerA = new Player(this.bag.drawPlayerStacks());
+        this.playerB = new Player(this.bag.drawPlayerStacks());
+        this.gui = new GUI(this);
+	    this.turn = Turn.PLAYER_A;
+
+		Placement placement = new Placement("test", 0, 0, Direction.HORIZONTAL);
+        board.addWord(placement);
+		gui.update();
+        while(!endGame()) {
+            makeMove();
+        }
+	    gui.finished();
+	}
+
+	public void restartGame() throws InvocationTargetException, InterruptedException {
+		this.board = new Board();
+        this.dictionary = new Dictionary();
+        this.bag = new Bag();
+        this.playerA = new Player(this.bag.drawPlayerStacks());
+        this.playerB = new Player(this.bag.drawPlayerStacks());
+	    this.turn = Turn.PLAYER_A;
+
+		Placement placement = new Placement("test", 0, 0, Direction.HORIZONTAL);
+        board.addWord(placement);
+		SwingUtilities.invokeAndWait(new Runnable() {
+			public void run() {
+				gui.update();
+			}
+		});
+        while(!endGame()) {
+            makeMove();
+        }
+	    gui.finished();
+	}
+
     public static void main(String[] args){
-        int average = 0;
-        int A = 0;
-        int B = 0;
-        //for (int j = 0; j < 20; j++) {
         Operator operator = new Operator();
-        System.out.println("Original bag:\n" + operator.bag);
-	    System.out.println("Bag length:\n" + operator.bag.letters.size());
-        Placement placement = new Placement("test", 0, 0, Direction.HORIZONTAL);
-        operator.board.addWord(placement);
-
-        int i = 0;
-        while(!operator.endGame()) {
-	    //for(int i = 0; i < 10; i++){
-
-            System.out.println(i++ + ", word for above info: " + operator.makeMove());
-        }
-	    operator.gui.finished();
-        average += operator.winner().getScore();
-        if (operator.winner() == operator.playerA) {
-            A += 1;
-        } else {
-            B += 1;
-        }
-        //System.out.println("The winner is: " + operator.winnerToString() + " with a total score: " + operator.winner
-		//	    ().getScore());
-
-        //}
-        System.out.println("A vant: " + A + ", B vant: " + B + " med average " + (int)average/20);
+		operator.newGame();
     }
 }
