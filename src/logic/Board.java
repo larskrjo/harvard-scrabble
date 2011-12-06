@@ -81,7 +81,7 @@ public class Board{
                 return -1;
             }
             for (int i = 0; i < word.length(); i++) {
-                if (this.grid[rw+1][cl].getLetter() != ' ' && this.grid[rw][cl+i].getLetter() != word.charAt(i)) {
+                if (this.grid[rw+i][cl].getLetter() != ' ' && this.grid[rw+i][cl].getLetter() != word.charAt(i)) {
                     return -1;
                 }
             }
@@ -156,7 +156,7 @@ public class Board{
                 return -1;
             }
             for (int i = 0; i < word.length(); i++) {
-                if (this.grid[rw+1][cl].getLetter() != ' ' && this.grid[rw][cl+i].getLetter() != word.charAt(i)) {
+                if (this.grid[rw+i][cl].getLetter() != ' ' && this.grid[rw+i][cl].getLetter() != word.charAt(i)) {
                     return -1;
                 }
             }

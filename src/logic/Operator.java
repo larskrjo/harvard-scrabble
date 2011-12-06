@@ -32,7 +32,7 @@ public class Operator {
     }
 
     public String makeMove() {
-	    String new_word = "";
+	    String new_word = "--";
         String rack;
         if (turn == Turn.PLAYER_A) {
             rack = this.playerA.getLetters().toString();
@@ -126,16 +126,18 @@ public class Operator {
 	    gui.update();
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args){
         Operator operator = new Operator();
         System.out.println("Original bag:\n" + operator.bag);
 	    System.out.println("Bag length:\n" + operator.bag.letters.size());
         Placement placement = new Placement("test", 0, 0, Direction.HORIZONTAL);
         operator.board.addWord(placement);
 
+	    int i = 0;
         while(!operator.endGame()) {
 	    //for(int i = 0; i < 4; i++){
-            System.out.println("word for above info: " + operator.makeMove());
+
+            System.out.println(i++ + ", word for above info: " + operator.makeMove());
         }
 
         //System.out.println("The winner is: " + operator.winnerToString() + " with a total score: " + operator.winner
