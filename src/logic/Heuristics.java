@@ -17,6 +17,20 @@ import java.util.List;
 public class Heuristics {
 
     public static String rackExchange(Board board, String rack) {
+        List<String> bitStrings = new ArrayList<String>();
+        for (int i = 0; i < Math.pow(rack.length(), 2); i++) {
+            bitStrings.add(Integer.toBinaryString(i));
+        }
+
+        for (String bitString : bitStrings) {
+            for (int i = 0; i < bitString.length(); i++) {
+                if (bitString.charAt(i) == '1') {
+
+                }
+            }
+        }
+
+        /*
         // Precompute Hashmap containing heuristic values for characters
         HashMap<Character, Tuple> letterMap = new HashMap<Character, Tuple>();
         letterMap.put('a', new Tuple(0.5, -8.0));
@@ -143,7 +157,7 @@ public class Heuristics {
 
 
         // Drop letters as to maintain / achieve balance between vocs and cons - with slight bias towards cons
-
+        */
         return null;
     }
 
@@ -291,8 +305,8 @@ public class Heuristics {
         System.out.println(rackEval(board, rack, placement));
 
         rackExchange(board, "abcdefg");
+        System.out.println(Integer.toBinaryString(127));
 
-        System.out.println(removeCharAt("01234567", 7));
 
     }
 
@@ -308,5 +322,4 @@ public class Heuristics {
     public static String removeCharAt(String string, int index) {
         return string.substring(0,index) + string.substring(index+1,string.length());
     }
-
 }
