@@ -333,4 +333,57 @@ public class Dictionary {
 		}
 
     }
+
+    public List<String> getExtendedWords(String string, int len) {
+        char[] word = string.toCharArray();
+        Node currentNode = DAWG;
+        Node tempNode;
+        List<String> words = new ArrayList<String>();
+        for (int i = 0; i < word.length; i++) {
+            tempNode = new Node(word[i], Type.NOT_YET_A_WORD, currentNode);
+            Node tempComparisonNode = currentNode.contain(tempNode);
+            if(tempComparisonNode == null){
+                break;
+            }
+            currentNode = tempComparisonNode;
+            if (i == word.length-1) {
+                List<Node> candList = new ArrayList<Node>();
+                if(!currentNode.getChildren().isEmpty()) {
+                    for(Node child : currentNode.getChildren()) {
+                        if (!child.getChildren().isEmpty()) {
+                            candList.add(child);
+                        }
+                        if (child.getType() == Type.END_OF_WORD) {
+                            words.add(string + child.getValue());
+                        }
+                    }
+                    for (int j = 0; j < len; j++) {
+                        if(!candList.isEmpty()) {
+                            List<Node> newList = new ArrayList<Node>();
+                            for(Node candidate : candList) {
+                                for (Node child : candidate.getChildren()) {
+                                    if (child.getType() == Type.END_OF_WORD) {
+                                        String temp = "" + child.getValue();
+                                        Node temp1 = child;
+                                        Node temp2;
+                                        for(int k = 0; k < j+1; k++) {
+                                            temp2 = temp1.getParent();
+                                            temp = temp2.getValue() + temp;
+                                            temp1 = temp2;
+                                        }
+                                        words.add(string + temp);
+                                    }
+                                    if (j < len-2) {
+                                        newList.add(child);
+                                    }
+                                }
+                            }
+                            candList = newList;
+                        }
+                    }
+                }
+            }
+        }
+        return words;
+    }
 }
