@@ -30,30 +30,73 @@ public class Intelligence {
     public static final boolean firstTurnOpenness = true;
     public static final boolean duplicateProbability = true;
 
-    public static Placement getFirstPlacement(Dictionary dict, Board board, String rack) {
+public static Placement getFirstPlacement(Dictionary dict, Board board, String rack, boolean smartOpening) {
         List<String> words = new ArrayList<String>();
         List<Character> chars = new ArrayList<Character>();
         for (int i = 0; i < rack.length(); i++) {
             chars.add(rack.charAt(i));
         }
-        for (int i = 0; i < rack.length(); i++) {
+        for (int i = 0; i < chars.size(); i++) {
             char removed = chars.remove(0);
-            Board tempboard = new Board();
-            tempboard.addWord(new Placement(Character.toString(removed), 0, 0, Direction.HORIZONTAL));
-            List<String> []tempwords = dict.getWords(chars, board.getGrid(), 0, Direction.HORIZONTAL);
-            if (tempwords[0] != null) {
-               for (int k = 0; k < tempwords[0].size(); k++) {
+            String sRemoved = Character.toString(removed);
+            Board board2 = new Board();
+            board2.addWord(new Placement(sRemoved, sRemoved, 0, 0, Direction.HORIZONTAL));
+            List<String> []tempwords = dict.getWords(chars, board2.getGrid(), 0, Direction.HORIZONTAL);
+            for (int k = 0; k < tempwords[0].size(); k++) {
                 words.add(tempwords[0].get(k));
-               }
             }
             chars.add(removed);
         }
-
+        List<Placement> placements = new ArrayList<Placement>();
         for (int i = 0; i < words.size(); i++) {
-            //System.out.println(words.get(i));
+            String word = words.get(i);
+            if (word.length() >= 1 && word.length() != 4) {
+                placements.add(new Placement(word, word, 7, 7, Direction.HORIZONTAL));
+            }
+            if (word.length() >= 2) {
+                placements.add(new Placement(word, word, 7, 6, Direction.HORIZONTAL));
+            }
+            if(word.length() >= 3) {
+                placements.add(new Placement(word, word, 7, 5, Direction.HORIZONTAL));
+            }
+            if(word.length() >= 4 && word.length() != 4) {
+                placements.add(new Placement(word, word, 7, 4, Direction.HORIZONTAL));
+            }
+            if(word.length() >= 5) {
+                placements.add(new Placement(word, word, 7, 3, Direction.HORIZONTAL));
+            }
+            if(word.length() >= 6) {
+                placements.add(new Placement(word, word, 7, 2, Direction.HORIZONTAL));
+            }
+            if(word.length() >= 7) {
+                placements.add(new Placement(word, word, 7, 1, Direction.HORIZONTAL));
+            }
         }
 
-        return null;
+        // Without heuristics
+        if (!smartOpening) {
+            List<Candidate> candidates = new ArrayList<Candidate>();
+            for (Placement placement : placements) {
+                candidates.add(new Candidate(placement, board.computeScore(placement)));
+            }
+            Collections.sort(candidates);
+            return candidates.get(0).getPlacement();
+        }
+
+        // With heuristics
+        List<Candidate> candidates = new ArrayList<Candidate>();
+        for (Placement placement : placements) {
+            int rawScore = board.computeScore(placement);
+            int length = placement.getWord().length();
+            int index = placement.getCol();
+            if (length < 5 || length == 5 && index == 5) {
+                candidates.add(new Candidate(placement, board.computeScore(placement)));
+            } else {
+                candidates.add(new Candidate(placement, board.computeScore(placement)-7));
+            }
+        }
+        Collections.sort(candidates);
+        return candidates.get(0).getPlacement();
     }
 
     public static Placement getPlacement(Dictionary dict, Board board, String rack, boolean future, boolean rackEval) {
@@ -144,7 +187,7 @@ public class Intelligence {
     public static void main(String[] args){
         Dictionary dict = new Dictionary();
         Board board = new Board();
-        getFirstPlacement(dict, board, "detests");
+        System.out.println(getFirstPlacement(dict, board, "detests", true));
         /*
         System.out.println(board);
         board.addWord(new Placement("something", 7, 0, Direction.HORIZONTAL));
