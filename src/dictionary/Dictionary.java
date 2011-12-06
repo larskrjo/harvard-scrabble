@@ -84,7 +84,7 @@ public class Dictionary {
 	 * @return The type of the last letter in the word, either END_OF_STRING or END_OF_WORD if the string was found,
 	 * or NOT_A_WORD if it was not found.
 	 */
-	private Type search(String string){
+	public Type search(String string){
 		char[] word = string.toCharArray();
 		Node currentNode = DAWG;
 		Node tempNode;
@@ -102,34 +102,40 @@ public class Dictionary {
 		return currentNode.getType();
 	}
 
-	private List<String> getWords(String subString, List<Character> bag, Field[][] field, int position,
-	                              int sizeOfBag, int index, Direction direction, char current_letter){
+	private List<String> getWords(String subString, List<Character> bag, Field[][] field, int variable_position,
+	                              int fixed_position, int sizeOfBag, Direction direction, char current_letter){
 		Field[] lockedLetters = new Field[15];
 		if(direction == Direction.HORIZONTAL){
-			lockedLetters = field[index];
+			lockedLetters = field[fixed_position];
+			if(current_letter != ' ' && subString.length() > 0 && !validInOppositeDirection(field, variable_position-1,fixed_position,
+				direction, subString.charAt(subString.length()-1))){
+				return null;
+			}
 		}
 		else {
 			for(int i = 0; i < field.length; i++){
-			    lockedLetters[i] = field[i][index];
+			    lockedLetters[i] = field[i][fixed_position];
 		    }
-		}
-		if(current_letter != ' ' && subString.length() > 0 && !validInOppositeDirection(field, position-1,index,
+			if(current_letter != ' ' && subString.length() > 0 && !validInOppositeDirection(field, fixed_position, variable_position-1,
 				direction, subString.charAt(subString.length()-1))){
-			return null;
+				return null;
+			}
 		}
+
 		List<String> list = new ArrayList<String>();
 		Type type = search(subString);
-		if(type == Type.END_OF_WORD && containLockedLetter(lockedLetters, position) && position == 15 && bag.size() < sizeOfBag){
+		if(type == Type.END_OF_WORD && containLockedLetter(lockedLetters, variable_position) && variable_position == 15 && bag.size() < sizeOfBag){
 			List<String> returnValue = new ArrayList<String>();
 			returnValue.add(subString);
 			return returnValue;
 		}
-		if(type == Type.END_OF_WORD && containLockedLetter(lockedLetters, position) && lockedLetters[position].getLetter() ==
+		if(variable_position != 15 && type == Type.END_OF_WORD && containLockedLetter(lockedLetters,
+				variable_position) && lockedLetters[variable_position].getLetter() ==
 				' ' && bag.size() < sizeOfBag){
 			list.add(subString);
 		}
 		else if (type == Type.END_OF_STRING){
-			if(containLockedLetter(lockedLetters, position) && (position == 15 || lockedLetters[position].getLetter() ==
+			if(containLockedLetter(lockedLetters, variable_position) && (variable_position == 15 || lockedLetters[variable_position].getLetter() ==
 					' ') && bag.size() < sizeOfBag){
 				List<String> returnValue = new ArrayList<String>();
 				returnValue.add(subString);
@@ -137,14 +143,14 @@ public class Dictionary {
 			}
 			return null;
 		}
-		else if (bag.size() == 0 || position == 15){
+		else if (bag.size() == 0 || variable_position == 15){
 			return null;
 		}
 		List<String> tempList;
 		// Force to search for the predetermined letter
-		if(lockedLetters[position].getLetter() != ' '){
-			tempList = getWords(subString+lockedLetters[position].getLetter(), bag, field, position+1, sizeOfBag,
-					index, direction, ' ');
+		if(lockedLetters[variable_position].getLetter() != ' '){
+			tempList = getWords(subString+lockedLetters[variable_position].getLetter(), bag, field, variable_position+1, fixed_position, sizeOfBag,
+					direction, ' ');
 			if(tempList != null){
 				list.addAll(tempList);
 			}
@@ -160,7 +166,7 @@ public class Dictionary {
 				Character removed = it.next();
 				subString += removed;
 				tempBag.remove(tempBag.indexOf(removed));
-				tempList = getWords(subString, tempBag, field, position+1, sizeOfBag, index, direction, removed);
+				tempList = getWords(subString, tempBag, field, variable_position+1, fixed_position, sizeOfBag, direction, removed);
 				if(tempList != null){
 					list.addAll(tempList);
 				}
@@ -283,7 +289,7 @@ public class Dictionary {
 		  */
 		for(int i = min; i < max+1; i++){
 			if(i == min || lockedLetters[i-1].getLetter() == ' '){
-				lists[i] = getWords("", bag, field, i, bag.size(), index, direction, ' ');
+				lists[i] = getWords("", bag, field, i, index, bag.size(), direction, ' ');
 			}
 		}
 	    return lists;
@@ -292,11 +298,8 @@ public class Dictionary {
 	public static void main(String[] args) {
 		Dictionary dict = new Dictionary();
 		Board board = new Board();
-		board.addWord(new Placement("taae", 2,0,Direction.HORIZONTAL));
-		board.addWord(new Placement("tsst", 3,0,Direction.HORIZONTAL));
-		board.addWord(new Placement("ape", 4,3,Direction.VERTICAL));
-		board.addWord(new Placement("loses", 2,4,Direction.VERTICAL));
-
+		board.addWord(new Placement("testy", 0,0,Direction.VERTICAL));
+		board.addWord(new Placement("ta", 3,0,Direction.HORIZONTAL));
 		for(int i = 0; i < 8; i++){
 			for (int j = 0; j < 8; j++){
 				System.out.print(board.getGrid()[i][j].getLetter());
@@ -310,15 +313,15 @@ public class Dictionary {
 		rack.add('s');
 		rack.add('k');
 		rack.add('l');
-		List<String>[] list1 = dict.getWords(rack, board.getGrid(), 4, Direction.HORIZONTAL);
-		List<String>[] list2 = dict.getWords(rack, board.getGrid(), 0, Direction.VERTICAL);
-		System.out.println("--------------------HORIZONTAL-----------------");
-		System.out.println("row: " + 4);
-		for(int i = 0; i < list1.length; i++){
-			System.out.println(list1[i]);
-		}
+		List<String>[] list = dict.getWords(rack, board.getGrid(), 1, Direction.VERTICAL);
 		System.out.println("--------------------VERTICAL-----------------");
 		System.out.println("col: " + 2);
+		for(int i = 0; i < list.length; i++){
+			System.out.println(list[i]);
+		}
+		List<String>[] list2 = dict.getWords(rack, board.getGrid(), 4, Direction.HORIZONTAL);
+		System.out.println("--------------------HORIZONTAL-----------------");
+		System.out.println("row: " + 4);
 		for(int i = 0; i < list2.length; i++){
 			System.out.println(list2[i]);
 		}

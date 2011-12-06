@@ -106,7 +106,7 @@ public class Board{
         int full_rack_bonus = 0;
         if (placement.getDirection() == Direction.HORIZONTAL) {
             // Computations for horizontal placement
-            if (cl + word.length() > 15) {
+            if (cl + word.length() > 14) {
                 return -1;
             }
             for (int i = 0; i < word.length(); i++) {
@@ -152,7 +152,7 @@ public class Board{
             return raw_score*word_bonus+letter_bonus+other_score + full_rack_bonus;
         } else {
             // Computations for vertical placement
-            if (rw + word.length() > 15) {
+            if (rw + word.length() > 14) {
                 return -1;
             }
             for (int i = 0; i < word.length(); i++) {

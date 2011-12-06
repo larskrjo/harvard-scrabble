@@ -2,9 +2,8 @@ package logic;
 
 import dictionary.Dictionary;
 import dictionary.Direction;
+import dictionary.Type;
 import gui.GUI;
-
-import javax.swing.plaf.metal.MetalBorders;
 
 /**
  * Created by IntelliJ IDEA.
@@ -32,7 +31,8 @@ public class Operator {
 	    this.turn = Turn.PLAYER_A;
     }
 
-    public void makeMove() {
+    public String makeMove() {
+	    String new_word = "";
         String rack;
         if (turn == Turn.PLAYER_A) {
             rack = this.playerA.getLetters().toString();
@@ -64,6 +64,7 @@ public class Operator {
 	        System.out.println("row: " + placement.getRow());
 	        System.out.println("direction: " + placement.getDirection());
             int score = this.board.computeScore(placement);
+	        new_word = placement.getWord();
             this.board.addWord(placement);
             //System.out.println("The score for this word is: " +  score);
             if (turn == Turn.PLAYER_A) {
@@ -72,7 +73,7 @@ public class Operator {
                 String usedRack = placement.getRack();
                 System.out.println("Rack " + usedRack + ", word " + placement.getWord());
                 this.playerA.removeWord(usedRack);
-                while(!this.playerA.isRackFull()) {
+                while(!this.playerA.isRackFull() && this.bag.letters.size() != 0) {
                      this.playerA.addLetter(this.bag.drawLetter());
                 }
             } else {
@@ -81,13 +82,15 @@ public class Operator {
                 String usedRack = placement.getRack();
                 System.out.println("Rack " + usedRack + ", word " + placement.getWord());
                 this.playerB.removeWord(usedRack);
-                while(!this.playerB.isRackFull()) {
+                while(!this.playerB.isRackFull() && this.bag.letters.size() != 0) {
                      this.playerB.addLetter(this.bag.drawLetter());
                 }
             }
         }
         changeTurn();
         this.gui.update();
+	    return new_word;
+
     }
 
     public boolean endGame() {
@@ -121,6 +124,7 @@ public class Operator {
 	    else {
 		    turn = Turn.PLAYER_A;
 	    }
+	    gui.update();
     }
 
     public static void main(String[] args) {
@@ -130,11 +134,17 @@ public class Operator {
         Placement placement = new Placement("test", 4, 4, Direction.HORIZONTAL);
         operator.board.addWord(placement);
 
+	    String new_word = "";
         while(!operator.endGame()) {
-            operator.makeMove();
+            new_word = operator.makeMove();
+	        if(operator.dictionary.search(new_word) == Type.NOT_POSSIBLY_A_WORD || operator.dictionary.search(new_word) == Type.NOT_YET_A_WORD){
+		        System.out.println(new_word + " is not a word");
+		        break;
+	        }
             System.out.println("New bag:\n" + operator.bag);
 	        System.out.println("Bag length:\n" + operator.bag.letters.size());
         }
+
         //System.out.println("The winner is: " + operator.winnerToString() + " with a total score: " + operator.winner
 		//	    ().getScore());
     }

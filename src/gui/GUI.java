@@ -2,6 +2,7 @@ package gui;
 
 import logic.Board;
 import logic.Operator;
+import logic.Turn;
 
 import javax.swing.*;
 import java.awt.*;
@@ -40,6 +41,7 @@ public class GUI extends JFrame{
 		add(player1, c);
 		c.gridx = 9;
 		player2 = new JLabel("logic.Player 2");
+		player2.setBackground(Color.RED);
 		player2.setOpaque(true);
 		add(player2, c);
 
@@ -81,6 +83,14 @@ public class GUI extends JFrame{
 				labels[i][j].setText("" + operator.board.getField(i,j).getLetter());
 			}
 		}
+	    if(operator.turn == Turn.PLAYER_A){
+		    player1.setBackground(Color.GREEN);
+		    player2.setBackground(Color.RED);
+	    }
+	    else {
+		    player2.setBackground(Color.GREEN);
+		    player1.setBackground(Color.RED);
+	    }
     }
 
 	public static void main(String[] args) {
