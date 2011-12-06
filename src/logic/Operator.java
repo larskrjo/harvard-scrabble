@@ -28,16 +28,20 @@ public class Operator {
 	    String new_word = "--";
         String rack;
         boolean future;
+        boolean rackEval;
         if (turn == Turn.PLAYER_A) {
             rack = this.playerA.getLetters().toString();
-            future = true;
+            future = false;
+            rackEval = true;
+
         } else {
             rack = this.playerB.getLetters().toString();
             future = false;
+            rackEval = false;
         }
         //System.out.println("Rack: " + rack);
 
-        Placement placement = Intelligence.getPlacement(this.dictionary, this.board, rack, future);
+        Placement placement = Intelligence.getPlacement(this.dictionary, this.board, rack, future,rackEval);
 
         if(placement == null) {
             String rack_change = Intelligence.rackExchange(this.bag, rack);

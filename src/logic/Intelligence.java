@@ -4,6 +4,7 @@ import dictionary.Dictionary;
 import dictionary.Direction;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -58,9 +59,9 @@ public class Intelligence {
         return null;
     }
 
-    public static Placement getPlacement(Dictionary dict, Board board, String rack, boolean future) {
+    public static Placement getPlacement(Dictionary dict, Board board, String rack, boolean future, boolean rackEval) {
         ArrayList<Placement> candidates = getCandidates(dict, board, rack);
-        return useHeuristics(dict, board, rack, candidates, future);
+        return useHeuristics(dict, board, rack, candidates, future, rackEval);
     }
 
     public static ArrayList<Placement> getCandidates(Dictionary dict, Board board, String rack) {
@@ -162,7 +163,7 @@ public class Intelligence {
         */
       }
 
-    public static Placement useHeuristics(Dictionary dict, Board board, String rack, ArrayList<Placement> candidates, boolean futureValue) {
+    public static Placement useHeuristics(Dictionary dict, Board board, String rack, ArrayList<Placement> candidates, boolean futureValue, boolean rackEval) {
         Hashtable<Placement, Integer> candToScore = new Hashtable<Placement, Integer>();
 
         ArrayList<Candidate> candScores = new ArrayList<Candidate>();
@@ -182,14 +183,14 @@ public class Intelligence {
         }
 
         for (Placement candidate : candidates) {
-            int score;
+            int score = board.computeScore(candidate);
             if (futureValue) {
-                score = board.computeScore(candidate) + placementFutureValue(dict, board, candidate);
-            } else {
-                score = board.computeScore(candidate);
+                score += placementFutureValue(dict, board, candidate);
+            }
+            if (rackEval) {
+                score += rackEval(board, rack, candidate);
             }
             candToScore.put(candidate, score);
-
             if (rackEvaluation) {
                 // Compute rackLeave with candidate placement
                 String rackLeave = rack;
@@ -289,5 +290,163 @@ public class Intelligence {
             }
         }
         return value;
+    }
+
+    /*
+
+    Rack heuristics start here
+
+     */
+
+    public static double rackEval(Board board, String rack, Placement placement) {
+        // Rack evaluation without consideration for what's left in the bag
+        // Based on Sheppard (2002) Towards Perfect Game of Scrabble
+        double heuristic = 0;
+        double vowelCount = 0;
+        double consCount = 0;
+        List<Character> rackLeave = toCharList(rack);
+        List<Character> used = toCharList(placement.getRack());
+        for (Character c : used) {
+            rackLeave.remove(c);
+        }
+        // RackLeave now in rackLeave as a list with Characters
+
+        // Precompute Hashmap containing heuristic values for characters
+        HashMap<Character, Tuple> letterMap = new HashMap<Character, Tuple>();
+        letterMap.put('a', new Tuple(0.5, -8.0));
+        letterMap.put('b', new Tuple(-3.5, -8.0));
+        letterMap.put('c', new Tuple(-0.5, -7.0));
+        letterMap.put('d', new Tuple(-1.0, -6.0));
+        letterMap.put('e', new Tuple(4.0, -3.5));
+        letterMap.put('f', new Tuple(-3.0, -6.0));
+        letterMap.put('g', new Tuple(-3.5, -10.0));
+        letterMap.put('h', new Tuple(0.5, -6.0));
+        letterMap.put('i', new Tuple(-1.5, -10.0));
+        letterMap.put('j', new Tuple(-2.5, -2.5));
+        letterMap.put('k', new Tuple(-1.5, -1.5));
+        letterMap.put('l', new Tuple(-1.5, -6.0));
+        letterMap.put('m', new Tuple(-0.5, -6.0));
+        letterMap.put('n', new Tuple(0.0, -5.5));
+        letterMap.put('o', new Tuple(-2.5, -8.0));
+        letterMap.put('p', new Tuple(-1.5, -6.0));
+        letterMap.put('q', new Tuple(-11.5, -11.5));
+        letterMap.put('r', new Tuple(1.0, -9.0));
+        letterMap.put('s', new Tuple(7.5, 1.0));
+        letterMap.put('t', new Tuple(-1.0, -6.0));
+        letterMap.put('u', new Tuple(-4.5, -12.0));
+        letterMap.put('v', new Tuple(-6.5, -8.0));
+        letterMap.put('w', new Tuple(-4.0, -8.0));
+        letterMap.put('x', new Tuple(3.5, 3.5));
+        letterMap.put('y', new Tuple(-2.5, -10.0));
+        letterMap.put('z', new Tuple(3.0, 3.0));
+
+        HashMap<Double, HashMap<Double, Double>> balanceMap = new HashMap<Double, HashMap<Double, Double>>();
+        HashMap<Double, Double> zeroVowels = new HashMap<Double, Double>();
+        HashMap<Double, Double> oneVowel = new HashMap<Double, Double>();
+        HashMap<Double, Double> twoVowels = new HashMap<Double, Double>();
+        HashMap<Double, Double> threeVowels = new HashMap<Double, Double>();
+        HashMap<Double, Double> fourVowels = new HashMap<Double, Double>();
+        HashMap<Double, Double> fiveVowels = new HashMap<Double, Double>();
+        HashMap<Double, Double> sixVowels = new HashMap<Double, Double>();
+        balanceMap.put(0.0, zeroVowels);
+        balanceMap.put(1.0, oneVowel);
+        balanceMap.put(2.0, twoVowels);
+        balanceMap.put(3.0, threeVowels);
+        balanceMap.put(4.0, fourVowels);
+        balanceMap.put(5.0, fiveVowels);
+        balanceMap.put(6.0, sixVowels);
+
+        balanceMap.get(0.0).put(0.0, 0.0);
+        balanceMap.get(1.0).put(0.0, -0.5);
+        balanceMap.get(2.0).put(0.0, -2.0);
+        balanceMap.get(3.0).put(0.0, -3.0);
+        balanceMap.get(4.0).put(0.0, -5.0);
+        balanceMap.get(5.0).put(0.0, -7.5);
+        balanceMap.get(6.0).put(0.0, -12.5);
+
+        balanceMap.get(0.0).put(1.0, 0.5);
+        balanceMap.get(1.0).put(1.0, 1.5);
+        balanceMap.get(2.0).put(1.0, -0.5);
+        balanceMap.get(3.0).put(1.0, -2.0);
+        balanceMap.get(4.0).put(1.0, -4.5);
+        balanceMap.get(5.0).put(1.0, -7.0);
+
+        balanceMap.get(0.0).put(2.0, 1.5);
+        balanceMap.get(1.0).put(2.0, 1.0);
+        balanceMap.get(2.0).put(2.0, 0.5);
+        balanceMap.get(3.0).put(2.0, -0.5);
+        balanceMap.get(4.0).put(2.0, -3.0);
+
+        balanceMap.get(0.0).put(3.0, 0.0);
+        balanceMap.get(1.0).put(3.0, 0.5);
+        balanceMap.get(2.0).put(3.0, 0.0);
+        balanceMap.get(3.0).put(3.0, 1.5);
+
+        balanceMap.get(0.0).put(4.0, -3.5);
+        balanceMap.get(1.0).put(4.0, -2.5);
+        balanceMap.get(2.0).put(4.0, -2.0);
+
+        balanceMap.get(0.0).put(5.0, -6.0);
+        balanceMap.get(1.0).put(5.0, -5.5);
+
+        balanceMap.get(0.0).put(6.0, -9.0);
+
+        List<Character> checked = new ArrayList<Character>();
+        for (int i = 0; i < rackLeave.size(); i++) {
+            // Update vowel / consonant count
+            if (Score.isVowel(rackLeave.get(i))) {
+                vowelCount = vowelCount + 1.0;
+            } else {
+                consCount = consCount + 1.0;
+            }
+            // Add/subtract value for each letter checking for duplicates
+            if (checked.contains(rackLeave.get(i))) {
+                heuristic += letterMap.get(rackLeave.get(i)).getLast();
+            } else {
+                heuristic += letterMap.get(rackLeave.get(i)).getFirst();
+            }
+            checked.add(rackLeave.get(i));
+        }
+        heuristic += balanceMap.get(vowelCount).get(consCount);
+
+        // Adjust for special cases i.e. combinations QU, GIN, IVE, OTU
+
+        if (rackLeave.contains('q') && rackLeave.contains('u')) {
+            heuristic += 17.0;
+        }
+        if (rackLeave.contains('g') && rackLeave.contains('i') && rackLeave.contains('n')) {
+            heuristic += 6.0;
+        }
+        if (rackLeave.contains('i') && rackLeave.contains('v') && rackLeave.contains('e')) {
+            heuristic += 1.7;
+        }
+        if (rackLeave.contains('o') && rackLeave.contains('t') && rackLeave.contains('u')) {
+            heuristic += 3.0;
+        }
+        return heuristic;
+    }
+
+    public static List<Character> toCharList(String string) {
+        List<Character> chars = new ArrayList<Character>();
+        if (string == null) {
+            return chars;
+        }
+        for (int i = 0; i < string.length(); i++) {
+            chars.add(string.charAt(i));
+        }
+        return chars;
+    }
+
+    public static String removeChar(String string, char c) {
+        for (int i = 0; i < string.length(); i++) {
+            if (string.charAt(i) == c) {
+                return removeCharAt(string, i);
+            }
+        }
+        return null;
+    }
+
+    public static String removeCharAt(String string, int index) {
+        return string.substring(0,index) + string.substring(index+1,string.length());
     }
 }
