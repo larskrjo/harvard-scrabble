@@ -197,26 +197,21 @@ public class Operator {
 	    if(GUI_ON){
 
 	    }
-	    else if(SHOW_HEURISTIC_INFO){
-		    int A = 0;
-            int B = 0;
+	    if(SHOW_HEURISTIC_INFO){
             int A_avg = 0;
             int B_avg = 0;
             for (int i = 0; i < 50; i++) {
-                if (operator.winner() == operator.playerA) {
-                    A += 1;
-                } else if (operator.winner() == operator.playerB) {
-                    B += 1;
-                }
                 A_avg += operator.playerA.getScore();
                 B_avg += operator.playerB.getScore();
             }
-            A_avg = A_avg/50;
-            B_avg = B_avg/50;
-		    System.out.println("Knut vant " + A + " ganger med " + A_avg + ", Ola vant " + B + " ganger med score " + B_avg);
 	    }
 	    if(CALCULATE_HEURISTICS){
-
+		    int A_avg = 0;
+            int B_avg = 0;
+            for (int i = 0; i < 50; i++) {
+                A_avg += operator.playerA.getScore();
+                B_avg += operator.playerB.getScore();
+            }
 	    }
     }
 }
