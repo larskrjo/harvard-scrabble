@@ -42,8 +42,12 @@ public class Operator {
             rackEval = false;
         }
         //System.out.println("Rack: " + rack);
-
-        Placement placement = Intelligence.getPlacement(this.dictionary, this.board, rack, future,rackEval);
+        Placement placement;
+        if (board.isEmpty()) {
+            placement = Intelligence.getFirstPlacement(this.dictionary, this.board, rack);
+        } else {
+            placement = Intelligence.getPlacement(this.dictionary, this.board, rack, future,rackEval);
+        }
 
         if(placement == null) {
             String rack_change = Intelligence.rackExchange(this.board, rack);
