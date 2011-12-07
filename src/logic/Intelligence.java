@@ -99,12 +99,12 @@ public static Placement getFirstPlacement(Dictionary dict, Board board, String r
         return candidates.get(0).getPlacement();
     }
 
-    public static Placement getPlacement(Dictionary dict, Board board, String rack, boolean future, boolean rackEval, boolean greedy, boolean heuristicOn) {
+    public static Placement getPlacement(Dictionary dict, Board board, String rack, boolean future, boolean rackEval, boolean greedy) {
         ArrayList<Placement> candidates = getCandidates(dict, board, rack);
         if (candidates.isEmpty()) {
             return null;
         }
-        if (heuristicOn) {
+        if (future || rackEval || greedy) {
             return useHeuristics(dict, board, rack, candidates, future, rackEval, greedy);
         } else {
             return candidates.get((int)(Math.random()*candidates.size()));
