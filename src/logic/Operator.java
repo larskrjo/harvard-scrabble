@@ -23,6 +23,7 @@ public class Operator {
     public Bag bag;
     public GUI gui;
     public Turn turn;
+	public boolean guiOn = true;
 
     public String makeMove() {
 	    String new_word = "--";
@@ -32,7 +33,7 @@ public class Operator {
         if (turn == Turn.PLAYER_A) {
             rack = this.playerA.getLetters().toString();
             future = false;
-            rackEval = false;
+            rackEval = true;
 
         } else {
             rack = this.playerB.getLetters().toString();
@@ -92,7 +93,8 @@ public class Operator {
         }
         System.out.println("Heuristic: " + Intelligence.placementFutureValue(this.dictionary, this.board, placement));
         changeTurn();
-        //this.gui.update();
+	    if(guiOn)
+            this.gui.update();
 	    return new_word;
 
     }
@@ -128,7 +130,8 @@ public class Operator {
 	    else {
 		    turn = Turn.PLAYER_A;
 	    }
-	    //gui.update();
+	    if(guiOn)
+	        gui.update();
     }
 
 	public void newGame(){
@@ -138,16 +141,19 @@ public class Operator {
         this.bag = new Bag();
         this.playerA = new Player(this.bag.drawPlayerStacks());
         this.playerB = new Player(this.bag.drawPlayerStacks());
-        //this.gui = new GUI(this);
+		if(guiOn)
+            this.gui = new GUI(this);
 	    this.turn = Turn.PLAYER_B;
 
 		Placement placement = new Placement("test", 0, 0, Direction.HORIZONTAL);
         board.addWord(placement);
-		//gui.update();
+		if(guiOn)
+			gui.update();
         while(!endGame()) {
             makeMove();
         }
-	    //gui.finished();
+		if(guiOn)
+	        gui.finished();
 	}
 
 	public void restartGame() throws InvocationTargetException, InterruptedException {
@@ -162,27 +168,29 @@ public class Operator {
         board.addWord(placement);
 		SwingUtilities.invokeAndWait(new Runnable() {
 			public void run() {
-				gui.update();
+				if(guiOn)
+					gui.update();
 			}
 		});
         while(!endGame()) {
             makeMove();
         }
-	    gui.finished();
+		if(guiOn)
+	        gui.finished();
 	}
 
     public static void main(String[] args){
-        int A = 0;
-        int B = 0;
-        for (int i = 0; i < 100; i++) {
+        //int A = 0;
+        //int B = 0;
+        //for (int i = 0; i < 500; i++) {
         Operator operator = new Operator();
 		operator.newGame();
-         if (operator.winner() == operator.playerA) {
-                A += 1;
-            } else if (operator.winner() == operator.playerB) {
-           B += 1;
-           }
-        }
-        System.out.println("Knut vant " + A + " ganger, Ola vant " + B);
+        // if (operator.winner() == operator.playerA) {
+        //        A += 1;
+        //    } else if (operator.winner() == operator.playerB) {
+        //   B += 1;
+        //   }
+        //}
+        // System.out.println("Knut vant " + A + " ganger, Ola vant " + B);
     }
 }
