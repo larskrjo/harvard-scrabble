@@ -345,15 +345,6 @@ public class Dictionary {
 		Dictionary dict = new Dictionary();
 		Board board = new Board();
 		board.addWord(new Placement("stub", 0,2,Direction.VERTICAL));
-		board.addWord(new Placement("meoued", 2,3,Direction.VERTICAL));
-		board.addWord(new Placement("oxid", 7,0,Direction.HORIZONTAL));
-		board.addWord(new Placement("testifier", 0,0,Direction.HORIZONTAL));
-		board.addWord(new Placement("ingested", 0,6,Direction.VERTICAL));
-		board.addWord(new Placement("redon", 6,4,Direction.VERTICAL));
-		board.addWord(new Placement("elixir", 4,1,Direction.VERTICAL));
-		board.addWord(new Placement("joe", 3,0,Direction.VERTICAL));
-		board.addWord(new Placement("volt", 9,3,Direction.HORIZONTAL));
-		board.addWord(new Placement("debark", 7,6,Direction.HORIZONTAL));
 		for(int i = 0; i < 15; i++){
 			for (int j = 0; j < 15; j++){
 				System.out.print(board.getGrid()[i][j].getLetter());
