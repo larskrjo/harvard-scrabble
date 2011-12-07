@@ -597,7 +597,9 @@ public static Placement getFirstPlacement(Dictionary dict, Board board, String r
         return thrw;
     }
 
-    public static int fishing(Dictionary dict, Board board, String rack) {
+   /*
+   public static int fishing(Dictionary dict, Board board, String rack) {
+
         int value = 0;
         int rest;
         HashMap<Character, Integer> letterMap = new HashMap();
@@ -607,15 +609,20 @@ public static Placement getFirstPlacement(Dictionary dict, Board board, String r
         } else {
             return 0;
         }
-        List<Character> letters = new ArrayList<Character>();
-        for (char letter : lettersLeft) {
-            if (!letters.contains(letter)) {
-                letters.add(letter);
-                letterMap.put(letter, 1);
-            } else {
-                letterMap.put(letter, letterMap.get(letter) + 1);
+        if (rest > 0) {
+            List<Character> letters = new ArrayList<Character>();
+            for (char letter : lettersLeft) {
+                if (!letters.contains(letter)) {
+                    letters.add(letter);
+                    letterMap.put(letter, 1);
+                } else {
+                    letterMap.put(letter, letterMap.get(letter) + 1);
+                }
             }
+            List<String> potential = new ArrayList<String>();
+
         }
+
         ArrayList<Placement> list = getCandidates(dict, board, rack);
 
         /*for (Placement placement : list) {
@@ -633,8 +640,8 @@ public static Placement getFirstPlacement(Dictionary dict, Board board, String r
                 }
             }
         }
-        */
         return value;
     }
+    */
 
 }
