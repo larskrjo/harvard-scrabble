@@ -99,13 +99,13 @@ public static Placement getFirstPlacement(Dictionary dict, Board board, String r
         return candidates.get(0).getPlacement();
     }
 
-    public static Placement getPlacement(Dictionary dict, Board board, String rack, boolean future, boolean rackEval, boolean greedy) {
+    public static Placement getPlacement(Dictionary dict, Board board, String rack, boolean future, boolean rackEval, boolean greedy, boolean heuristicOn) {
         ArrayList<Placement> candidates = getCandidates(dict, board, rack);
         if (candidates.isEmpty()) {
             return null;
         }
-        if (greedy) {
-            return useHeuristics(dict, board, rack, candidates, future, rackEval);
+        if (heuristicOn) {
+            return useHeuristics(dict, board, rack, candidates, future, rackEval, greedy);
         } else {
             return candidates.get((int)(Math.random()*candidates.size()));
         }
@@ -211,7 +211,7 @@ public static Placement getFirstPlacement(Dictionary dict, Board board, String r
         */
       }
 
-    public static Placement useHeuristics(Dictionary dict, Board board, String rack, ArrayList<Placement> candidates, boolean futureValue, boolean rackEval) {
+    public static Placement useHeuristics(Dictionary dict, Board board, String rack, ArrayList<Placement> candidates, boolean futureValue, boolean rackEval, boolean greedy) {
         Hashtable<Placement, Integer> candToScore = new Hashtable<Placement, Integer>();
 
         ArrayList<Candidate> candScores = new ArrayList<Candidate>();
@@ -231,7 +231,10 @@ public static Placement getFirstPlacement(Dictionary dict, Board board, String r
         }
 
         for (Placement candidate : candidates) {
-            int score = board.computeScore(candidate);
+            int score = 0;
+            if (greedy){
+                score = board.computeScore(candidate);
+            }
             if (futureValue) {
                 score += placementFutureValue(dict, board, candidate);
             }
