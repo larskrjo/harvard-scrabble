@@ -342,7 +342,7 @@ public class Dictionary {
 	public static void main(String[] args) {
 		Dictionary dict = new Dictionary();
 		Board board = new Board();
-		board.addWord(new Placement("etagere", 0,0,Direction.HORIZONTAL));
+		board.addWord(new Placement("etagere", 0,0,Direction.VERTICAL));
 		for(int i = 0; i < 8; i++){
 			for (int j = 0; j < 8; j++){
 				System.out.print(board.getGrid()[i][j].getLetter());
@@ -359,7 +359,7 @@ public class Dictionary {
 		rack.add('h');
 		rack.add('w');
 		rack.add('f');
-		List<String>[] list = dict.getWords(rack, board.getGrid(), 0, Direction.VERTICAL);
+		List<String>[] list = dict.getWords(rack, board.getGrid(), 1, Direction.VERTICAL);
 		System.out.println("--------------------VERTICAL-----------------");
 		System.out.println("col: " + 0);
 		for(int i = 0; i < list.length; i++){
