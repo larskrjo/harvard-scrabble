@@ -226,17 +226,31 @@ public class Intelligence {
         String word = placement.getWord();
         double partValue = 0;
         for (int i = 0; i < word.length(); i++) {
-            for (int j = -1; j < 2; j++) {
+            for (int j = -2; j < 3; j++) {
                 if (placement.getDirection() == Direction.HORIZONTAL && row + j < 15 && row + j >= 0) {
                     if (board.getField(row + j, col + i).getHotspot() != ' ' && board.getField(row + j,col + i).getLetter() == ' ' && j != 0) {
                         if (Score.isVowel(word.charAt(i))) {
-                            partValue += 1;
+                            partValue += 0.3+1/Math.abs(j);
+                            if(board.getField(row + j, col + i).getHotspot() == '2' || board.getField(row + j, col + i).getHotspot() == '4') {
+                                if (word.charAt(i) == 'u' && j == -1) {
+                                    partValue += 10;
+                                } else {
+                                    partValue += 2;
+                                }
+                            }
                         }
                     }
                 } else if ((placement.getDirection() == Direction.VERTICAL && col + j < 15 && col+j >= 0)) {
                     if (board.getField(row + i, col + j).getHotspot() != ' ' && board.getField(row + i, col + j).getLetter() == ' ' && j != 0) {
                         if (Score.isVowel(word.charAt(i))) {
-                            partValue += 1;
+                            partValue += 0.3 + 1/Math.abs(j);
+                            if (board.getField(row + i, col + j).getHotspot() == '2' || board.getField(row + i, col + j).getHotspot() == '4') {
+                                if (word.charAt(i) == 'u' && j == 1) {
+                                    partValue += 10;
+                                } else {
+                                    partValue += 2;
+                                }
+                            }
                         }
                     }
                 }
@@ -252,7 +266,7 @@ public class Intelligence {
                 if (board.getField(i, col).getLetter() == ' ') {
                     count += 1;
                     if(board.getField(i, col).getHotspot() != ' ') {
-                        hots += Integer.parseInt("" + board.getField(i,col).getHotspot());
+                        hots += 1;
                     }
                 } else {
                     count = 0;
@@ -264,7 +278,7 @@ public class Intelligence {
                 if (board.getField(row, i).getLetter() == ' ') {
                     count += 1;
                     if(board.getField(row, i).getHotspot() != ' ') {
-                        hots += Integer.parseInt("" + board.getField(row, i).getHotspot());
+                        hots += 1;
                     }
                 } else {
                     count = 0;
@@ -527,6 +541,28 @@ public class Intelligence {
             }
         }
         return thrw;
+    }
+
+    public static int fishing(Dictionary dict, Board board, String rack) {
+        int value = 0;
+        ArrayList<Placement> list = getCandidates(dict, board, rack);
+        List<Character> lettersLeft = Bag.getCharactersLeftInBag(board);
+        for (Placement placement : list) {
+            List<String> candidates = dict.getExtendedWords(placement.getWord(), 7-rack.length());
+            for (String candidate : candidates) {
+                if (candidate.length() == placement.getWord().length() + 7-rack.length()) {
+                    int temp = 1;
+                    for(int i = 0; i < 7-rack.length(); i++) {
+                        if (!lettersLeft.contains(candidate.charAt(placement.getWord().length() + i))) {
+                            temp = 0;
+                            break;
+                        }
+                    }
+                    value += temp;
+                }
+            }
+        }
+        return value/(7-rack.length());
     }
 
 }

@@ -34,7 +34,7 @@ public class Operator {
         if (turn == Turn.PLAYER_A) {
             rack = this.playerA.getLetters().toString();
             future = false;
-            rackEval = true;
+            rackEval = false;
 
         } else {
             rack = this.playerB.getLetters().toString();
@@ -55,13 +55,11 @@ public class Operator {
                 }
                 this.playerA.newPass();
             } else {
-                /*
                 for (char letter : rack_change.toCharArray()) {
                     this.playerB.removeLetter(letter);
                     letter = this.bag.exchangeLetter(letter);
                     this.playerB.addLetter(letter);
                 }
-                */
                 this.playerB.newPass();
             }
         } else {
@@ -147,7 +145,11 @@ public class Operator {
         this.playerB = new Player(this.bag.drawPlayerStacks());
 		if(guiOn)
             this.gui = new GUI(this);
-	    this.turn = Turn.PLAYER_B;
+        if (Math.random() < 0.5) {
+            this.turn = Turn.PLAYER_B;
+        } else {
+            this.turn = Turn.PLAYER_A;
+        }
 
 		Placement placement = new Placement("test", 0, 0, Direction.HORIZONTAL);
         board.addWord(placement);
@@ -185,17 +187,23 @@ public class Operator {
 	}
 
     public static void main(String[] args){
-        //int A = 0;
-        //int B = 0;
-        //for (int i = 0; i < 500; i++) {
-        Operator operator = new Operator();
-		operator.newGame();
-        // if (operator.winner() == operator.playerA) {
-        //        A += 1;
-        //    } else if (operator.winner() == operator.playerB) {
-        //   B += 1;
-        //   }
-        //}
-        // System.out.println("Knut vant " + A + " ganger, Ola vant " + B);
+        int A = 0;
+        int B = 0;
+        int A_avg = 0;
+        int B_avg = 0;
+        for (int i = 0; i < 50; i++) {
+            Operator operator = new Operator();
+		    operator.newGame();
+            if (operator.winner() == operator.playerA) {
+                A += 1;
+            } else if (operator.winner() == operator.playerB) {
+                B += 1;
+            }
+            A_avg += operator.playerA.getScore();
+            B_avg += operator.playerB.getScore();
+        }
+        A_avg = A_avg/50;
+        B_avg = B_avg/50;
+        System.out.println("Knut vant " + A + " ganger med " + A_avg + ", Ola vant " + B + " ganger med score " + B_avg);
     }
 }
