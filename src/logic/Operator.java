@@ -34,7 +34,6 @@ public class Operator {
 	// Different ways of running
 	public static boolean GUI_ON = true;
 	public static boolean SHOW_HEURISTIC_INFO = false;
-	public static boolean CALCULATE_HEURISTICS = true;
 
     public String makeMove(List<Boolean> playerAHeuristics, List<Boolean> playerBHeuristics) {
 	    String new_word = "--";
@@ -168,9 +167,6 @@ public class Operator {
         } else {
             this.turn = Turn.PLAYER_A;
         }
-
-		Placement placement = new Placement("test", 0, 0, Direction.HORIZONTAL);
-        board.addWord(placement);
 		if(GUI_ON)
 			gui.update();
 		List<Boolean> playerAHeuristics = new ArrayList<Boolean>();
@@ -192,9 +188,6 @@ public class Operator {
         this.playerA = new Player(this.bag.drawPlayerStacks());
         this.playerB = new Player(this.bag.drawPlayerStacks());
 	    this.turn = Turn.PLAYER_A;
-
-		Placement placement = new Placement("test", 0, 0, Direction.HORIZONTAL);
-        board.addWord(placement);
 		SwingUtilities.invokeAndWait(new Runnable() {
 			public void run() {
 				if(GUI_ON)
@@ -237,21 +230,5 @@ public class Operator {
     public static void main(String[] args){
 	    Operator operator = new Operator();
 	    operator.newGame();
-	    if(SHOW_HEURISTIC_INFO){
-            int A_avg = 0;
-            int B_avg = 0;
-            for (int i = 0; i < 50; i++) {
-                A_avg += operator.playerA.getScore();
-                B_avg += operator.playerB.getScore();
-            }
-	    }
-	    if(CALCULATE_HEURISTICS){
-		    int A_avg = 0;
-            int B_avg = 0;
-            for (int i = 0; i < 50; i++) {
-                A_avg += operator.playerA.getScore();
-                B_avg += operator.playerB.getScore();
-            }
-	    }
     }
 }
