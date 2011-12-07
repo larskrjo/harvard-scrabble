@@ -4,6 +4,7 @@ import dictionary.Dictionary;
 import dictionary.Direction;
 import dictionary.Type;
 import gui.GUI;
+import statistics.Stats;
 
 import javax.swing.*;
 import java.lang.reflect.InvocationTargetException;
@@ -31,22 +32,37 @@ public class Operator {
     boolean rackLeave;
 	boolean rackExchange;
 
+	boolean Agreedy;
+	boolean ApositionEvaluation;
+	boolean ArackLeave;
+	boolean ArackExchange;
+
+	boolean Bgreedy;
+	boolean BpositionEvaluation;
+	boolean BrackLeave;
+	boolean BrackExchange;
+
 	// Different ways of running
-	public static boolean GUI_ON = true;
+	public static boolean GUI_ON = false;
 	public static boolean SHOW_HEURISTIC_INFO = false;
 
-    public String makeMove(List<Boolean> playerAHeuristics, List<Boolean> playerBHeuristics) {
+    public String makeMove() {
 	    String new_word = "--";
         String rack;
         if (turn == Turn.PLAYER_A) {
             rack = this.playerA.getLetters().toString();
-	        setPlayerHeuristics(playerAHeuristics);
+	        greedy = Agreedy;
+	        positionEvaluation = ApositionEvaluation;
+	        rackLeave = ArackLeave;
+	        rackExchange = ArackExchange;
 
         } else {
             rack = this.playerB.getLetters().toString();
-            setPlayerHeuristics(playerBHeuristics);
+	        greedy = Bgreedy;
+	        positionEvaluation = BpositionEvaluation;
+	        rackLeave = BrackLeave;
+	        rackExchange = BrackExchange;
         }
-        //System.out.println("Rack: " + rack);
         Placement placement;
         if (board.isEmpty()) {
             placement = Intelligence.getFirstPlacement(this.dictionary, this.board, rack, false);
@@ -56,7 +72,10 @@ public class Operator {
         }
 
         if(placement == null) {
-            String rack_change = Intelligence.rackExchange(this.board, rack);
+	        String rack_change = rack;
+	        if(rackExchange){
+		        rack_change = Intelligence.rackExchange(this.board, rack);
+	        }
             if (turn == Turn.PLAYER_A) {
                 for (char letter : rack_change.toCharArray()) {
                     this.playerA.removeLetter(letter);
@@ -111,13 +130,6 @@ public class Operator {
 
     }
 
-	public void setPlayerHeuristics(List<Boolean> playerHeuristics){
-		greedy = playerHeuristics.get(0);
-		positionEvaluation = playerHeuristics.get(1);
-		rackLeave = playerHeuristics.get(2);
-		rackExchange = playerHeuristics.get(3);
-	}
-
     public boolean endGame() {
         return this.playerA.passLimit() || this.playerB.passLimit();
     }
@@ -169,12 +181,8 @@ public class Operator {
         }
 		if(GUI_ON)
 			gui.update();
-		List<Boolean> playerAHeuristics = new ArrayList<Boolean>();
-		setHeuristicsPlayerA(playerAHeuristics);
-		List<Boolean> playerBHeuristics = new ArrayList<Boolean>();
-		setHeuristicsPlayerB(playerBHeuristics);
         while(!endGame()) {
-            makeMove(playerAHeuristics, playerBHeuristics);
+            makeMove();
         }
 		if(GUI_ON)
 	        gui.finished();
@@ -194,41 +202,48 @@ public class Operator {
 					gui.update();
 			}
 		});
-		List<Boolean> playerAHeuristics = new ArrayList<Boolean>();
-		setHeuristicsPlayerA(playerAHeuristics);
-		List<Boolean> playerBHeuristics = new ArrayList<Boolean>();
-		setHeuristicsPlayerB(playerBHeuristics);
-
         while(!endGame()) {
-            makeMove(playerAHeuristics, playerBHeuristics);
+            makeMove();
         }
 		if(GUI_ON)
 	        gui.finished();
 	}
 
-	private void setHeuristicsPlayerA(List<Boolean> playerAHeuristics){
-		// Greedy
-		playerAHeuristics.add(false);
-		// PositionEvaluation
-		playerAHeuristics.add(false);
-		// RackLeave
-		playerAHeuristics.add(false);
-		// RackExchange
-		playerAHeuristics.add(false);
-	}
-	private void setHeuristicsPlayerB(List<Boolean> playerBHeuristics){
-		// Greedy
-		playerBHeuristics.add(true);
-		// PositionEvaluation
-		playerBHeuristics.add(true);
-		// RackLeave
-		playerBHeuristics.add(false);
-		// RackExchange
-		playerBHeuristics.add(false);
-	}
+    public static void main(String[] args) throws InvocationTargetException, InterruptedException {
+	    final Stats statsForA = new Stats();
+	    final Stats statsForB = new Stats();
+	    List<Thread> threads = new ArrayList<Thread>();
+	    for(int i = 0; i < 10; i++){
+		    Thread t = new Thread(new Runnable() {
+			    public void run() {
+				    Operator operator = new Operator();
+				    // Set heuristics for Knut
+					operator.Agreedy = false;
+					operator.ApositionEvaluation = false;
+					operator.ArackLeave = false;
+					operator.ArackExchange = false;
 
-    public static void main(String[] args){
-	    Operator operator = new Operator();
-	    operator.newGame();
+		            // Set heuristics for Ola
+					operator.Bgreedy = true;
+					operator.BpositionEvaluation = false;
+					operator.BrackLeave = false;
+					operator.BrackExchange = false;
+
+	                operator.newGame();
+				    statsForA.updateScore(operator.playerA.score);
+		            statsForB.updateScore(operator.playerB.score);
+			    }
+		    });
+		    t.start();
+		    threads.add(t);
+	    }
+	    for(Thread t: threads){
+		    while(t.isAlive()){
+		    }
+	    }
+	    int averageAScore = statsForA.getAvgScore();
+	    int averageBScore = statsForB.getAvgScore();
+	    System.out.println("Average score for old player: " + averageAScore);
+	    System.out.println("Average score for new player: " + averageBScore);
     }
 }
