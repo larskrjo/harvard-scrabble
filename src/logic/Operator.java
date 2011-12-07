@@ -7,6 +7,8 @@ import gui.GUI;
 
 import javax.swing.*;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -23,34 +25,35 @@ public class Operator {
     public Bag bag;
     public GUI gui;
     public Turn turn;
-	public static boolean GUI_ON = false;
+	// Heuristics
+	boolean greedy;
+	boolean positionEvaluation;
+    boolean rackLeave;
+	boolean rackExchange;
+
+	// Different ways of running
+	public static boolean GUI_ON = true;
 	public static boolean SHOW_HEURISTIC_INFO = false;
 	public static boolean CALCULATE_HEURISTICS = true;
 
-    public String makeMove() {
+    public String makeMove(List<Boolean> playerAHeuristics, List<Boolean> playerBHeuristics) {
 	    String new_word = "--";
         String rack;
-        boolean future;
-        boolean rackEval;
-        boolean greedy;
         if (turn == Turn.PLAYER_A) {
             rack = this.playerA.getLetters().toString();
-            future = false;
-            rackEval = false;
-            greedy = true;
+	        setPlayerHeuristics(playerAHeuristics);
 
         } else {
             rack = this.playerB.getLetters().toString();
-            future = false;
-            rackEval = false;
-            greedy = false;
+            setPlayerHeuristics(playerBHeuristics);
         }
         //System.out.println("Rack: " + rack);
         Placement placement;
         if (board.isEmpty()) {
             placement = Intelligence.getFirstPlacement(this.dictionary, this.board, rack, false);
         } else {
-            placement = Intelligence.getPlacement(this.dictionary, this.board, rack, future, rackEval, greedy);
+            placement = Intelligence.getPlacement(this.dictionary, this.board, rack, positionEvaluation ,rackLeave,
+		            greedy);
         }
 
         if(placement == null) {
@@ -109,6 +112,13 @@ public class Operator {
 
     }
 
+	public void setPlayerHeuristics(List<Boolean> playerHeuristics){
+		greedy = playerHeuristics.get(0);
+		positionEvaluation = playerHeuristics.get(1);
+		rackLeave = playerHeuristics.get(2);
+		rackExchange = playerHeuristics.get(3);
+	}
+
     public boolean endGame() {
         return this.playerA.passLimit() || this.playerB.passLimit();
     }
@@ -163,8 +173,12 @@ public class Operator {
         board.addWord(placement);
 		if(GUI_ON)
 			gui.update();
+		List<Boolean> playerAHeuristics = new ArrayList<Boolean>();
+		setHeuristicsPlayerA(playerAHeuristics);
+		List<Boolean> playerBHeuristics = new ArrayList<Boolean>();
+		setHeuristicsPlayerB(playerBHeuristics);
         while(!endGame()) {
-            makeMove();
+            makeMove(playerAHeuristics, playerBHeuristics);
         }
 		if(GUI_ON)
 	        gui.finished();
@@ -187,19 +201,42 @@ public class Operator {
 					gui.update();
 			}
 		});
+		List<Boolean> playerAHeuristics = new ArrayList<Boolean>();
+		setHeuristicsPlayerA(playerAHeuristics);
+		List<Boolean> playerBHeuristics = new ArrayList<Boolean>();
+		setHeuristicsPlayerB(playerBHeuristics);
+
         while(!endGame()) {
-            makeMove();
+            makeMove(playerAHeuristics, playerBHeuristics);
         }
 		if(GUI_ON)
 	        gui.finished();
 	}
 
+	private void setHeuristicsPlayerA(List<Boolean> playerAHeuristics){
+		// Greedy
+		playerAHeuristics.add(false);
+		// PositionEvaluation
+		playerAHeuristics.add(false);
+		// RackLeave
+		playerAHeuristics.add(false);
+		// RackExchange
+		playerAHeuristics.add(false);
+	}
+	private void setHeuristicsPlayerB(List<Boolean> playerBHeuristics){
+		// Greedy
+		playerBHeuristics.add(true);
+		// PositionEvaluation
+		playerBHeuristics.add(true);
+		// RackLeave
+		playerBHeuristics.add(false);
+		// RackExchange
+		playerBHeuristics.add(false);
+	}
+
     public static void main(String[] args){
 	    Operator operator = new Operator();
 	    operator.newGame();
-	    if(GUI_ON){
-
-	    }
 	    if(SHOW_HEURISTIC_INFO){
             int A_avg = 0;
             int B_avg = 0;
