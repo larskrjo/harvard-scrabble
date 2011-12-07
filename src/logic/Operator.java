@@ -23,8 +23,9 @@ public class Operator {
     public Bag bag;
     public GUI gui;
     public Turn turn;
-	public boolean guiOn = true;
-	public boolean showHeuristicInfo = false;
+	public static boolean GUI_ON = false;
+	public static boolean SHOW_HEURISTIC_INFO = false;
+	public static boolean CALCULATE_HEURISTICS = true;
 
     public String makeMove() {
 	    String new_word = "--";
@@ -44,7 +45,7 @@ public class Operator {
         //System.out.println("Rack: " + rack);
         Placement placement;
         if (board.isEmpty()) {
-            placement = Intelligence.getFirstPlacement(this.dictionary, this.board, rack);
+            placement = Intelligence.getFirstPlacement(this.dictionary, this.board, rack, false);
         } else {
             placement = Intelligence.getPlacement(this.dictionary, this.board, rack, future,rackEval);
         }
@@ -70,7 +71,7 @@ public class Operator {
 	        System.out.println("col: " + placement.getCol() + " row: " + placement.getRow() + " direction: " +
 			        placement.getDirection());
             int score = this.board.computeScore(placement);
-            if(showHeuristicInfo)
+            if(SHOW_HEURISTIC_INFO)
 	            System.out.println("Score: "+ score);
 	        new_word = placement.getWord();
             this.board.addWord(placement);
@@ -79,7 +80,7 @@ public class Operator {
                 this.playerA.clearPass();
                 this.playerA.addScore(score);
                 String usedRack = placement.getRack();
-	            if(showHeuristicInfo)
+	            if(SHOW_HEURISTIC_INFO)
                     System.out.println("Rack " + usedRack + ", word " + placement.getWord());
                 this.playerA.removeWord(usedRack);
                 while(!this.playerA.isRackFull() && this.bag.letters.size() != 0) {
@@ -96,10 +97,10 @@ public class Operator {
                 }
             }
         }
-	    if(showHeuristicInfo)
+	    if(SHOW_HEURISTIC_INFO)
             System.out.println("Heuristic: " + Intelligence.placementFutureValue(this.dictionary, this.board, placement));
         changeTurn();
-	    if(guiOn)
+	    if(GUI_ON)
             this.gui.update();
 	    return new_word;
 
@@ -136,7 +137,7 @@ public class Operator {
 	    else {
 		    turn = Turn.PLAYER_A;
 	    }
-	    if(guiOn)
+	    if(GUI_ON)
 	        gui.update();
     }
 
@@ -147,7 +148,7 @@ public class Operator {
         this.bag = new Bag();
         this.playerA = new Player(this.bag.drawPlayerStacks());
         this.playerB = new Player(this.bag.drawPlayerStacks());
-		if(guiOn)
+		if(GUI_ON)
             this.gui = new GUI(this);
         if (Math.random() < 0.5) {
             this.turn = Turn.PLAYER_B;
@@ -157,12 +158,12 @@ public class Operator {
 
 		Placement placement = new Placement("test", 0, 0, Direction.HORIZONTAL);
         board.addWord(placement);
-		if(guiOn)
+		if(GUI_ON)
 			gui.update();
         while(!endGame()) {
             makeMove();
         }
-		if(guiOn)
+		if(GUI_ON)
 	        gui.finished();
 	}
 
@@ -179,35 +180,43 @@ public class Operator {
         board.addWord(placement);
 		SwingUtilities.invokeAndWait(new Runnable() {
 			public void run() {
-				if(guiOn)
+				if(GUI_ON)
 					gui.update();
 			}
 		});
         while(!endGame()) {
             makeMove();
         }
-		if(guiOn)
+		if(GUI_ON)
 	        gui.finished();
 	}
 
     public static void main(String[] args){
-        int A = 0;
-        int B = 0;
-        int A_avg = 0;
-        int B_avg = 0;
-        for (int i = 0; i < 50; i++) {
-            Operator operator = new Operator();
-		    operator.newGame();
-            if (operator.winner() == operator.playerA) {
-                A += 1;
-            } else if (operator.winner() == operator.playerB) {
-                B += 1;
+	    Operator operator = new Operator();
+	    operator.newGame();
+	    if(GUI_ON){
+
+	    }
+	    else if(SHOW_HEURISTIC_INFO){
+		    int A = 0;
+            int B = 0;
+            int A_avg = 0;
+            int B_avg = 0;
+            for (int i = 0; i < 50; i++) {
+                if (operator.winner() == operator.playerA) {
+                    A += 1;
+                } else if (operator.winner() == operator.playerB) {
+                    B += 1;
+                }
+                A_avg += operator.playerA.getScore();
+                B_avg += operator.playerB.getScore();
             }
-            A_avg += operator.playerA.getScore();
-            B_avg += operator.playerB.getScore();
-        }
-        A_avg = A_avg/50;
-        B_avg = B_avg/50;
-        System.out.println("Knut vant " + A + " ganger med " + A_avg + ", Ola vant " + B + " ganger med score " + B_avg);
+            A_avg = A_avg/50;
+            B_avg = B_avg/50;
+		    System.out.println("Knut vant " + A + " ganger med " + A_avg + ", Ola vant " + B + " ganger med score " + B_avg);
+	    }
+	    if(CALCULATE_HEURISTICS){
+
+	    }
     }
 }
