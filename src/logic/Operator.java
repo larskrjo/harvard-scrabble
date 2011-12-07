@@ -24,6 +24,7 @@ public class Operator {
     public GUI gui;
     public Turn turn;
 	public boolean guiOn = true;
+	public boolean showHeuristicInfo = false;
 
     public String makeMove() {
 	    String new_word = "--";
@@ -64,18 +65,20 @@ public class Operator {
                 this.playerB.newPass();
             }
         } else {
-	        System.out.println("col: " + placement.getCol() + " row: " + placement.getRow() + " direction: " +
-			        placement.getDirection());
             int score = this.board.computeScore(placement);
-            System.out.println("Score: "+ score);
+            if(showHeuristicInfo)
+	            System.out.println("Score: "+ score);
 	        new_word = placement.getWord();
             this.board.addWord(placement);
+	        System.out.println("col: " + placement.getCol() + " row: " + placement.getRow() + " direction: " +
+			        placement.getDirection() + " word: " + placement.getWord() +" with rack: " + rack);
             //System.out.println("The score for this word is: " +  score);
             if (turn == Turn.PLAYER_A) {
                 this.playerA.clearPass();
                 this.playerA.addScore(score);
                 String usedRack = placement.getRack();
-                System.out.println("Rack " + usedRack + ", word " + placement.getWord());
+	            if(showHeuristicInfo)
+                    System.out.println("Rack " + usedRack + ", word " + placement.getWord());
                 this.playerA.removeWord(usedRack);
                 while(!this.playerA.isRackFull() && this.bag.letters.size() != 0) {
                      this.playerA.addLetter(this.bag.drawLetter());
@@ -91,7 +94,8 @@ public class Operator {
                 }
             }
         }
-        System.out.println("Heuristic: " + Intelligence.placementFutureValue(this.dictionary, this.board, placement));
+	    if(showHeuristicInfo)
+            System.out.println("Heuristic: " + Intelligence.placementFutureValue(this.dictionary, this.board, placement));
         changeTurn();
 	    if(guiOn)
             this.gui.update();
@@ -135,7 +139,7 @@ public class Operator {
     }
 
 	public void newGame(){
-
+		System.out.println("New game!");
 		this.board = new Board();
         this.dictionary = new Dictionary();
         this.bag = new Bag();
@@ -157,6 +161,7 @@ public class Operator {
 	}
 
 	public void restartGame() throws InvocationTargetException, InterruptedException {
+		System.out.println("New game!");
 		this.board = new Board();
         this.dictionary = new Dictionary();
         this.bag = new Bag();
