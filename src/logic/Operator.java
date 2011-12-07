@@ -31,8 +31,8 @@ public class Operator {
         boolean rackEval;
         if (turn == Turn.PLAYER_A) {
             rack = this.playerA.getLetters().toString();
-            future = false;
-            rackEval = true;
+            future = true;
+            rackEval = false;
 
         } else {
             rack = this.playerB.getLetters().toString();
@@ -44,7 +44,7 @@ public class Operator {
         Placement placement = Intelligence.getPlacement(this.dictionary, this.board, rack, future,rackEval);
 
         if(placement == null) {
-            String rack_change = Intelligence.rackExchange(this.bag, rack);
+            String rack_change = Intelligence.rackExchange(this.board, rack);
             if (turn == Turn.PLAYER_A) {
                 for (char letter : rack_change.toCharArray()) {
                     this.playerA.removeLetter(letter);

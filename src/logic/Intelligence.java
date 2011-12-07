@@ -226,7 +226,7 @@ public class Intelligence {
         String word = placement.getWord();
         double partValue = 0;
         for (int i = 0; i < word.length(); i++) {
-            for (int j = -3; j < 3; j++) {
+            for (int j = -1; j < 2; j++) {
                 if (placement.getDirection() == Direction.HORIZONTAL && row + j < 15 && row + j >= 0) {
                     if (board.getField(row + j, col + i).getHotspot() != ' ' && board.getField(row + j,col + i).getLetter() == ' ' && j != 0) {
                         if (Score.isVowel(word.charAt(i))) {
