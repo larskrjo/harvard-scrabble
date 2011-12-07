@@ -99,9 +99,14 @@ public static Placement getFirstPlacement(Dictionary dict, Board board, String r
         return candidates.get(0).getPlacement();
     }
 
-    public static Placement getPlacement(Dictionary dict, Board board, String rack, boolean future, boolean rackEval) {
+    public static Placement getPlacement(Dictionary dict, Board board, String rack, boolean future, boolean rackEval, boolean greedy) {
         ArrayList<Placement> candidates = getCandidates(dict, board, rack);
-        return useHeuristics(dict, board, rack, candidates, future, rackEval);
+        if (greedy) {
+            return useHeuristics(dict, board, rack, candidates, future, rackEval);
+        } else {
+            return candidates.get((int)(Math.random()*candidates.size()));
+        }
+
     }
 
     public static ArrayList<Placement> getCandidates(Dictionary dict, Board board, String rack) {
@@ -588,9 +593,21 @@ public static Placement getFirstPlacement(Dictionary dict, Board board, String r
 
     public static int fishing(Dictionary dict, Board board, String rack) {
         int value = 0;
-        ArrayList<Placement> list = getCandidates(dict, board, rack);
+        int rest;
+        HashMap<Character, Integer> letterMap = new HashMap();
         List<Character> lettersLeft = Bag.getCharactersLeftInBag(board);
-        for (Placement placement : list) {
+        if (lettersLeft.size() + rack.length() >= 7) {
+            rest = 7 - rack.length();
+        } else {
+            return 0;
+        }
+        List<Character> letters = new ArrayList<Character>();
+        //for (letter) {
+
+       // }
+        ArrayList<Placement> list = getCandidates(dict, board, rack);
+
+        /*for (Placement placement : list) {
             List<String> candidates = dict.getExtendedWords(placement.getWord(), 7-rack.length());
             for (String candidate : candidates) {
                 if (candidate.length() == placement.getWord().length() + 7-rack.length()) {
@@ -605,7 +622,8 @@ public static Placement getFirstPlacement(Dictionary dict, Board board, String r
                 }
             }
         }
-        return value/(7-rack.length());
+        */
+        return value;
     }
 
 }

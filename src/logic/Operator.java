@@ -32,22 +32,25 @@ public class Operator {
         String rack;
         boolean future;
         boolean rackEval;
+        boolean greedy;
         if (turn == Turn.PLAYER_A) {
             rack = this.playerA.getLetters().toString();
             future = false;
             rackEval = false;
+            greedy = true;
 
         } else {
             rack = this.playerB.getLetters().toString();
             future = false;
             rackEval = false;
+            greedy = false;
         }
         //System.out.println("Rack: " + rack);
         Placement placement;
         if (board.isEmpty()) {
             placement = Intelligence.getFirstPlacement(this.dictionary, this.board, rack, false);
         } else {
-            placement = Intelligence.getPlacement(this.dictionary, this.board, rack, future,rackEval);
+            placement = Intelligence.getPlacement(this.dictionary, this.board, rack, future, rackEval, greedy);
         }
 
         if(placement == null) {
