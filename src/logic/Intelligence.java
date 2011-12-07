@@ -101,6 +101,9 @@ public static Placement getFirstPlacement(Dictionary dict, Board board, String r
 
     public static Placement getPlacement(Dictionary dict, Board board, String rack, boolean future, boolean rackEval, boolean greedy) {
         ArrayList<Placement> candidates = getCandidates(dict, board, rack);
+        if (candidates.isEmpty()) {
+            return null;
+        }
         if (greedy) {
             return useHeuristics(dict, board, rack, candidates, future, rackEval);
         } else {
@@ -596,15 +599,20 @@ public static Placement getFirstPlacement(Dictionary dict, Board board, String r
         int rest;
         HashMap<Character, Integer> letterMap = new HashMap();
         List<Character> lettersLeft = Bag.getCharactersLeftInBag(board);
-        if (lettersLeft.size() + rack.length() >= 7) {
+        if (lettersLeft.size() >= 5 && rack.length() + lettersLeft.size() >= 7) {
             rest = 7 - rack.length();
         } else {
             return 0;
         }
         List<Character> letters = new ArrayList<Character>();
-        //for (letter) {
-
-       // }
+        for (char letter : lettersLeft) {
+            if (!letters.contains(letter)) {
+                letters.add(letter);
+                letterMap.put(letter, 1);
+            } else {
+                letterMap.put(letter, letterMap.get(letter) + 1);
+            }
+        }
         ArrayList<Placement> list = getCandidates(dict, board, rack);
 
         /*for (Placement placement : list) {
