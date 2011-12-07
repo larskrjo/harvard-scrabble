@@ -31,7 +31,7 @@ public class Operator {
         boolean rackEval;
         if (turn == Turn.PLAYER_A) {
             rack = this.playerA.getLetters().toString();
-            future = true;
+            future = false;
             rackEval = false;
 
         } else {
@@ -53,11 +53,13 @@ public class Operator {
                 }
                 this.playerA.newPass();
             } else {
+                /*
                 for (char letter : rack_change.toCharArray()) {
                     this.playerB.removeLetter(letter);
                     letter = this.bag.exchangeLetter(letter);
                     this.playerB.addLetter(letter);
                 }
+                */
                 this.playerB.newPass();
             }
         } else {
@@ -90,7 +92,7 @@ public class Operator {
         }
         System.out.println("Heuristic: " + Intelligence.placementFutureValue(this.dictionary, this.board, placement));
         changeTurn();
-        this.gui.update();
+        //this.gui.update();
 	    return new_word;
 
     }
@@ -126,7 +128,7 @@ public class Operator {
 	    else {
 		    turn = Turn.PLAYER_A;
 	    }
-	    gui.update();
+	    //gui.update();
     }
 
 	public void newGame(){
@@ -136,16 +138,16 @@ public class Operator {
         this.bag = new Bag();
         this.playerA = new Player(this.bag.drawPlayerStacks());
         this.playerB = new Player(this.bag.drawPlayerStacks());
-        this.gui = new GUI(this);
+        //this.gui = new GUI(this);
 	    this.turn = Turn.PLAYER_B;
 
 		Placement placement = new Placement("test", 0, 0, Direction.HORIZONTAL);
         board.addWord(placement);
-		gui.update();
+		//gui.update();
         while(!endGame()) {
             makeMove();
         }
-	    gui.finished();
+	    //gui.finished();
 	}
 
 	public void restartGame() throws InvocationTargetException, InterruptedException {
@@ -170,17 +172,17 @@ public class Operator {
 	}
 
     public static void main(String[] args){
-        //int A = 0;
-        //int B = 0;
-        //for (int i = 0; i < 20; i++) {
+        int A = 0;
+        int B = 0;
+        for (int i = 0; i < 100; i++) {
         Operator operator = new Operator();
 		operator.newGame();
-          //  if (operator.winner() == operator.playerA) {
-            //    A += 1;
-         //   } else if (operator.winner() == operator.playerB) {
-               // B += 1;
-           // }
-        //}
-        //System.out.println("Knut vant " + A + " ganger, Ola vant " + B);
+         if (operator.winner() == operator.playerA) {
+                A += 1;
+            } else if (operator.winner() == operator.playerB) {
+           B += 1;
+           }
+        }
+        System.out.println("Knut vant " + A + " ganger, Ola vant " + B);
     }
 }
