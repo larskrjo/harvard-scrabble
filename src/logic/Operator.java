@@ -279,7 +279,7 @@ public class Operator {
         } else {
             //double time = 0;
             //int count = 0;
-            for (int i = 0; i< 10; i++) {
+            //for (int i = 0; i< 10; i++) {
                 Operator operator = new Operator();
                 // Set heuristics for Knut
                 operator.Agreedy = true;
@@ -298,7 +298,7 @@ public class Operator {
                 //time += operator.time;
                 //count += operator.count;
                 //System.out.println("Average time: " + operator.getAverageTime() + " on # of moves: " + operator.count);
-            }
+            //}
             //System.out.println("Final - Average time: " + time/(double)count + " on # of moves: " + (double)count/10.0);
 
         }
