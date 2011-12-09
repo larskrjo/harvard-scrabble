@@ -120,9 +120,9 @@ public class Board{
                 if (this.grid[rw][cl+i].getLetter() == ' ') {
                     letters_placed++;
                     if (this.grid[rw][cl+i].getHotspot() == '1') {
-                        letter_bonus = letter_bonus + letter_score*2;
+                        letter_bonus = letter_bonus + letter_score*1;
                     } else if (this.grid[rw][cl+i].getHotspot() == '2') {
-                        letter_bonus = letter_bonus + letter_score*3;
+                        letter_bonus = letter_bonus + letter_score*2;
                     } else if (this.grid[rw][cl+i].getHotspot() == '3') {
                         word_bonus = word_bonus * 2;
                     } else if (this.grid[rw][cl+i].getHotspot() == '4') {
