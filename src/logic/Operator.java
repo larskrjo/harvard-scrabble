@@ -8,7 +8,9 @@ import statistics.Stats;
 
 import javax.swing.*;
 import java.lang.reflect.InvocationTargetException;
+import java.sql.Time;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -26,6 +28,8 @@ public class Operator {
     public Bag bag;
     public GUI gui;
     public Turn turn;
+    //public int count= 0;
+    //public double time = 0;
 	// Heuristics
 	boolean greedy;
 	boolean positionEvaluation;
@@ -47,6 +51,9 @@ public class Operator {
 	public static boolean SHOW_HEURISTIC_INFO = false;
 
     public String makeMove() {
+        //final long startTime = System.nanoTime();
+        //final long endTime;
+
 	    String new_word = "--";
         String rack;
         if (turn == Turn.PLAYER_A) {
@@ -126,10 +133,19 @@ public class Operator {
         changeTurn();
 	    if(GUI_ON)
             this.gui.update();
+        /*endTime = System.nanoTime();
+        final double duration = ((double)endTime - (double)startTime)/1000000000.0;
+        this.time += duration;
+        this.count++;
+        System.out.println("Time per move " + duration); */
 	    return new_word;
 
     }
-
+   /*
+    public double getAverageTime() {
+        return this.time/(double)this.count;
+    }
+     */
     public boolean endGame() {
         return this.playerA.passLimit() || this.playerB.passLimit();
     }
@@ -261,21 +277,30 @@ public class Operator {
 	        System.out.println("Average score for old player: " + averageAScore + " and won " + statsForA.getWins());
 	        System.out.println("Average score for new player: " + averageBScore + " and won " + statsForB.getWins());
         } else {
-            Operator operator = new Operator();
-            // Set heuristics for Knut
-            operator.Agreedy = true;
-            operator.ApositionEvaluation = false;
-            operator.ArackLeave = false;
-            operator.ArackExchange = false;
+            //double time = 0;
+            //int count = 0;
+            for (int i = 0; i< 10; i++) {
+                Operator operator = new Operator();
+                // Set heuristics for Knut
+                operator.Agreedy = true;
+                operator.ApositionEvaluation = true;
+                operator.ArackLeave = true;
+                operator.ArackExchange = false;
 
-            // Set heuristics for Ola
-            operator.Bgreedy = true;
-            operator.BpositionEvaluation = false;
-            operator.BrackLeave = false;
-            operator.BrackExchange = false;
-            operator.turnOnGui();
+                // Set heuristics for Ola
+                operator.Bgreedy = true;
+                operator.BpositionEvaluation = true;
+                operator.BrackLeave = true;
+                operator.BrackExchange = false;
+                operator.turnOnGui();
 
-            operator.newGame();
+                operator.newGame();
+                //time += operator.time;
+                //count += operator.count;
+                //System.out.println("Average time: " + operator.getAverageTime() + " on # of moves: " + operator.count);
+            }
+            //System.out.println("Final - Average time: " + time/(double)count + " on # of moves: " + (double)count/10.0);
+
         }
     }
 }
