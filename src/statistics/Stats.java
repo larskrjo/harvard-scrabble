@@ -9,6 +9,7 @@ package statistics;
 public class Stats {
 
 	int totalScore = 0;
+    int wins = 0;
 	int count = 0;
 
 	public void updateScore(int score){
@@ -18,6 +19,10 @@ public class Stats {
 		}
 	}
 
+    public void updateWin() {
+        wins += 1;
+    }
+
 	public int getAvgScore(){
 		int avg = 0;
 		synchronized (this){
@@ -26,4 +31,8 @@ public class Stats {
 		}
 		return avg;
 	}
+
+    public int getWins() {
+        return wins;
+    }
 }
