@@ -80,7 +80,11 @@ public static Placement getFirstPlacement(Dictionary dict, Board board, String r
                 candidates.add(new Candidate(placement, board.computeScore(placement)));
             }
             Collections.sort(candidates);
-            return candidates.get(0).getPlacement();
+            if(!candidates.isEmpty()) {
+                return candidates.get(0).getPlacement();
+            } else {
+                return null;
+            }
         }
 
         // With heuristics
@@ -195,7 +199,7 @@ public static Placement getFirstPlacement(Dictionary dict, Board board, String r
     public static void main(String[] args){
         Dictionary dict = new Dictionary();
         Board board = new Board();
-        System.out.println(getFirstPlacement(dict, board, "detests", true));
+        //System.out.println(getFirstPlacement(dict, board, "detests", true));
         /*
         System.out.println(board);
         board.addWord(new Placement("something", 7, 0, Direction.HORIZONTAL));
@@ -310,7 +314,7 @@ public static Placement getFirstPlacement(Dictionary dict, Board board, String r
                 }
             }
         }
-        System.out.println(partValue);
+        //System.out.println(partValue);
         value -= partValue;
 
         int count = 0;

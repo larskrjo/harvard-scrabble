@@ -92,8 +92,8 @@ public class Operator {
                 this.playerB.newPass();
             }
         } else {
-	        System.out.println("col: " + placement.getCol() + " row: " + placement.getRow() + " direction: " +
-			        placement.getDirection());
+	        //System.out.println("col: " + placement.getCol() + " row: " + placement.getRow() + " direction: " +
+			     //   placement.getDirection());
             int score = this.board.computeScore(placement);
             if(SHOW_HEURISTIC_INFO)
 	            System.out.println("Score: "+ score);
@@ -165,6 +165,14 @@ public class Operator {
 	        gui.update();
     }
 
+    public void turnOnGui() {
+        GUI_ON = true;
+    }
+
+    public void showHeuristicsInfo() {
+        SHOW_HEURISTIC_INFO = true;
+    }
+
 	public void newGame(){
 		System.out.println("New game!");
 		this.board = new Board();
@@ -210,40 +218,64 @@ public class Operator {
 	}
 
     public static void main(String[] args) throws InvocationTargetException, InterruptedException {
-	    final Stats statsForA = new Stats();
-	    final Stats statsForB = new Stats();
-	    List<Thread> threads = new ArrayList<Thread>();
-	    for(int i = 0; i < 10; i++){
-		    Thread t = new Thread(new Runnable() {
-			    public void run() {
-				    Operator operator = new Operator();
-				    // Set heuristics for Knut
-					operator.Agreedy = false;
-					operator.ApositionEvaluation = false;
-					operator.ArackLeave = false;
-					operator.ArackExchange = false;
+        boolean statsOn = false;
+        if (statsOn) {
+            final Stats statsForA = new Stats();
+	        final Stats statsForB = new Stats();
+	        List<Thread> threads = new ArrayList<Thread>();
+	        for(int i = 0; i < 50; i++){
+		        Thread t = new Thread(new Runnable() {
+                    public void run() {
+                        Operator operator = new Operator();
+                        // Set heuristics for Knut
+                        operator.Agreedy = true;
+                        operator.ApositionEvaluation = true;
+                        operator.ArackLeave = false ;
+                        operator.ArackExchange = false;
 
-		            // Set heuristics for Ola
-					operator.Bgreedy = true;
-					operator.BpositionEvaluation = false;
-					operator.BrackLeave = false;
-					operator.BrackExchange = false;
+                        // Set heuristics for Ola
+                        operator.Bgreedy = true;
+                        operator.BpositionEvaluation = false;
+                        operator.BrackLeave = false;
+                        operator.BrackExchange = false;
 
-	                operator.newGame();
-				    statsForA.updateScore(operator.playerA.score);
-		            statsForB.updateScore(operator.playerB.score);
-			    }
-		    });
-		    t.start();
-		    threads.add(t);
-	    }
-	    for(Thread t: threads){
-		    while(t.isAlive()){
-		    }
-	    }
-	    int averageAScore = statsForA.getAvgScore();
-	    int averageBScore = statsForB.getAvgScore();
-	    System.out.println("Average score for old player: " + averageAScore);
-	    System.out.println("Average score for new player: " + averageBScore);
+                        operator.newGame();
+                        statsForA.updateScore(operator.playerA.score);
+                        statsForB.updateScore(operator.playerB.score);
+                        if (operator.winner() == operator.playerB) {
+                            statsForB.updateWin();
+                        } else if (operator.winner() == operator.playerA) {
+                            statsForA.updateWin();
+                        }
+                    }
+		        });
+		        t.start();
+		        threads.add(t);
+	            }
+	            for(Thread t: threads){
+		          while(t.isAlive()){
+		        }
+	        }
+	        int averageAScore = statsForA.getAvgScore();
+	        int averageBScore = statsForB.getAvgScore();
+	        System.out.println("Average score for old player: " + averageAScore + " and won " + statsForA.getWins());
+	        System.out.println("Average score for new player: " + averageBScore + " and won " + statsForB.getWins());
+        } else {
+            Operator operator = new Operator();
+            // Set heuristics for Knut
+            operator.Agreedy = true;
+            operator.ApositionEvaluation = false;
+            operator.ArackLeave = false;
+            operator.ArackExchange = false;
+
+            // Set heuristics for Ola
+            operator.Bgreedy = true;
+            operator.BpositionEvaluation = false;
+            operator.BrackLeave = false;
+            operator.BrackExchange = false;
+            operator.turnOnGui();
+
+            operator.newGame();
+        }
     }
 }
